@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Investigation views prototype</title>
+  <!-- Three investigation-view variants, switchable via ?variant=, inside the approved Case workspace shell. -->
+  <style>
+    * { box-sizing: border-box; }
+    :root { --bg:#0d0f10; --panel:#15191a; --panel2:#1a2021; --ink:#f2f0ea; --muted:#909b99; --line:rgba(255,255,255,.105); --mint:#aef0de; --cyan:#64d9d3; --amber:#ffc46b; --red:#ff8585; --blue:#8fa7ff; --shadow:0 24px 70px rgba(0,0,0,.4); font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+    body { margin:0; background:var(--bg); color:var(--ink); overflow-x:hidden; }
+    button,input,select,textarea { font:inherit; }
+    button { color:inherit; }
+    svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+    .shell { min-height:100vh; display:grid; grid-template-columns:232px minmax(0,1fr); background:var(--bg); }
+    .sidebar { position:relative; z-index:10; border-right:1px solid var(--line); padding:18px 14px 94px; display:flex; flex-direction:column; gap:7px; background:#090c0d; }
+    .brand { display:flex; align-items:center; gap:10px; padding:0 7px 15px; margin-bottom:8px; border-bottom:1px solid var(--line); }
+    .brand-mark { flex:0 0 38px; width:38px; height:38px; border-radius:12px; border:1px solid rgba(174,240,222,.28); display:grid; place-items:center; color:var(--mint); font-weight:900; }
+    .brand b,.profile b { display:block; font-size:12px; }
+    .brand small,.profile small,.case-button small { display:block; margin-top:2px; color:#6f7a78; font-size:9px; }
+    .nav-label { margin:10px 9px 3px; color:#64706d; font-size:9px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .nav-button { width:100%; min-height:40px; padding:8px 10px; border:1px solid transparent; border-radius:10px; background:transparent; color:#85908e; display:grid; grid-template-columns:20px 1fr; gap:9px; align-items:center; text-align:left; cursor:pointer; }
+    .nav-button.active,.nav-button:hover { color:var(--ink); background:#171b1c; border-color:var(--line); }
+    .case-button { width:100%; padding:8px 9px; border:1px solid transparent; border-radius:11px; background:transparent; color:#8f9795; display:grid; grid-template-columns:30px 1fr auto; gap:9px; align-items:center; text-align:left; cursor:pointer; }
+    .case-button.active,.case-button:hover { color:var(--ink); background:rgba(174,240,222,.06); border-color:rgba(174,240,222,.12); }
+    .mini-avatar { width:30px; height:30px; border-radius:9px; display:grid; place-items:center; background:#182628; color:var(--mint); font-size:10px; font-weight:800; }
+    .case-state { width:6px; height:6px; border-radius:50%; background:var(--mint); box-shadow:0 0 9px rgba(174,240,222,.55); }
+    .spacer { flex:1; }
+    .profile { display:grid; grid-template-columns:34px 1fr; gap:9px; align-items:center; padding:12px 8px 0; margin-top:5px; border-top:1px solid var(--line); }
+    .avatar { width:34px; height:34px; border-radius:50%; display:grid; place-items:center; background:#b88746; color:#101313; font-weight:900; font-size:11px; }
+    .main { min-width:0; }
+    .topbar { height:66px; padding:11px 18px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:12px; background:rgba(13,15,16,.94); }
+    .case-title { min-width:180px; }
+    .case-title b { display:block; font-size:13px; }
+    .case-title span { color:var(--muted); font-size:10px; }
+    .global-search { width:min(610px,55vw); height:42px; margin:auto; display:grid; grid-template-columns:20px 1fr auto; align-items:center; gap:9px; padding:0 12px; background:#171b1c; border:1px solid var(--line); border-radius:13px; }
+    .global-search input { min-width:0; width:100%; border:0; outline:0; background:transparent; color:var(--ink); }
+    .scope { padding:5px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted); font-size:9px; }
+    .top-action,.icon-button { border:1px solid var(--line); background:#171b1c; border-radius:10px; min-height:38px; padding:8px 11px; cursor:pointer; }
+    .icon-button { width:38px; padding:0; display:grid; place-items:center; }
+    .eyebrow { color:var(--mint); text-transform:uppercase; letter-spacing:.12em; font-size:9px; font-weight:800; }
+    .muted { color:var(--muted); }
+    .fine { font-size:10px; }
+    .pill { display:inline-flex; align-items:center; gap:5px; padding:5px 8px; border:1px solid var(--line); border-radius:999px; color:var(--muted); font-size:9px; }
+    .pill.good { color:#77e7bd; border-color:rgba(87,214,164,.25); background:rgba(87,214,164,.07); }
+    .pill.warn { color:var(--amber); border-color:rgba(255,196,107,.25); background:rgba(255,196,107,.06); }
+    .pill.inference { color:#b7c3ff; border-color:rgba(143,167,255,.28); background:rgba(143,167,255,.07); }
+    .confidence { display:flex; align-items:center; gap:6px; color:var(--muted); font-size:9px; }
+    .confidence i { width:34px; height:4px; border-radius:99px; background:#2a3333; overflow:hidden; }
+    .confidence i::after { content:""; display:block; width:var(--score,70%); height:100%; background:var(--mint); }
+    .citation { padding:2px 4px; border:1px solid rgba(100,217,211,.32); border-radius:4px; background:rgba(100,217,211,.07); color:var(--mint); font:8px ui-monospace,monospace; cursor:pointer; }
+
+    /* A: graph is the workbench; time and place act as synchronized filters. */
+    .a-layout { height:calc(100vh - 66px); display:grid; grid-template-columns:minmax(520px,1fr) 300px; grid-template-rows:minmax(0,1fr) 132px; }
+    .graph-workbench { position:relative; min-width:0; overflow:hidden; background:radial-gradient(circle at 48% 45%,rgba(65,120,115,.16),transparent 28%),linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px); background-size:auto,36px 36px,36px 36px; }
+    .view-toolbar { position:absolute; z-index:4; top:15px; left:16px; right:16px; display:flex; align-items:center; gap:8px; }
+    .view-tabs { display:flex; padding:4px; border:1px solid var(--line); border-radius:11px; background:rgba(10,13,14,.9); }
+    .view-tabs button { border:0; border-radius:8px; padding:7px 11px; background:transparent; color:var(--muted); font-size:10px; cursor:pointer; }
+    .view-tabs button.active { background:#253031; color:var(--ink); }
+    .toolbar-note { margin-left:auto; padding:8px 10px; border:1px solid var(--line); border-radius:10px; background:rgba(10,13,14,.88); font-size:9px; color:var(--muted); }
+    .graph-lines { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+    .graph-lines line,.graph-lines path { stroke:#405250; stroke-width:1.2; }
+    .graph-lines .strong { stroke:var(--mint); stroke-width:1.8; filter:drop-shadow(0 0 4px rgba(174,240,222,.35)); }
+    .graph-lines .possible { stroke:var(--blue); stroke-dasharray:5 5; }
+    .node { position:absolute; transform:translate(-50%,-50%); border:1px solid rgba(255,255,255,.16); border-radius:13px; background:#13191a; min-width:112px; padding:9px 10px; box-shadow:0 10px 25px rgba(0,0,0,.32); text-align:left; cursor:pointer; }
+    .node:hover,.node.selected { border-color:var(--mint); box-shadow:0 0 0 3px rgba(174,240,222,.08),0 14px 34px rgba(0,0,0,.4); }
+    .node .type { display:block; color:#667471; font-size:8px; text-transform:uppercase; letter-spacing:.1em; }
+    .node b { display:block; margin-top:3px; font-size:11px; }
+    .node small { display:block; color:var(--muted); font-size:8px; margin-top:3px; }
+    .node.person { border-radius:999px; min-width:126px; }
+    .node.seed::before { content:"Seed"; position:absolute; top:-8px; right:8px; padding:2px 5px; border-radius:5px; background:#295b55; color:#dffff6; font-size:7px; }
+    .node.alert::after { content:"Review"; position:absolute; top:-8px; right:7px; padding:2px 5px; border-radius:5px; background:#604a23; color:#ffe0a8; font-size:7px; }
+    .graph-legend { position:absolute; left:16px; bottom:13px; display:flex; gap:12px; color:var(--muted); font-size:8px; }
+    .graph-legend span::before { content:""; display:inline-block; width:18px; height:1px; margin-right:5px; vertical-align:middle; background:var(--mint); }
+    .graph-legend span:last-child::before { background:repeating-linear-gradient(90deg,var(--blue) 0 4px,transparent 4px 7px); }
+    .a-inspector { overflow:auto; border-left:1px solid var(--line); background:#111516; padding:17px; }
+    .inspector-head { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .inspector-head h2 { margin:5px 0 3px; font:400 22px/1.1 Georgia,serif; }
+    .preview-image { height:142px; margin:14px 0; overflow:hidden; position:relative; border:1px solid var(--line); border-radius:13px; background:linear-gradient(90deg,#29464c 0 27%,#19323a 27% 60%,#28454b 60% 100%); }
+    .preview-image::before { content:""; position:absolute; left:62%; bottom:0; width:38px; height:90px; border-radius:22px 22px 8px 8px; background:#111719; box-shadow:0 -24px 0 -7px #111719; }
+    .preview-image::after { content:"Fictional demo capture"; position:absolute; right:8px; bottom:6px; color:#b9e8df; font-size:7px; letter-spacing:.09em; text-transform:uppercase; }
+    .fact { padding:10px 0; border-top:1px solid var(--line); }
+    .fact b { display:block; font-size:10px; margin-bottom:4px; }
+    .fact p { margin:0; color:var(--muted); font-size:9px; line-height:1.45; }
+    .source-card { display:grid; grid-template-columns:34px 1fr; gap:9px; align-items:center; width:100%; padding:9px; margin-top:8px; border:1px solid var(--line); border-radius:10px; background:#171c1d; text-align:left; cursor:pointer; }
+    .source-icon { width:34px; height:34px; border-radius:8px; background:#243537; display:grid; place-items:center; color:var(--mint); font-size:9px; font-weight:800; }
+    .source-card b,.source-card small { display:block; }
+    .source-card b { font-size:9px; }.source-card small { margin-top:2px; color:var(--muted); font-size:8px; }
+    .a-timeline { grid-column:1; position:relative; border-top:1px solid var(--line); background:#101415; padding:16px 24px 15px; }
+    .time-scale { position:relative; height:54px; margin-top:13px; }
+    .time-line { position:absolute; top:18px; left:0; right:0; height:2px; background:#35413f; }
+    .time-window { position:absolute; top:15px; left:39%; width:28%; height:8px; border-radius:8px; background:rgba(174,240,222,.32); border:1px solid var(--mint); }
+    .time-event { position:absolute; top:9px; width:18px; height:18px; border:3px solid #101415; border-radius:50%; background:var(--mint); cursor:pointer; }
+    .time-event span { position:absolute; top:24px; left:50%; transform:translateX(-50%); color:var(--muted); white-space:nowrap; font-size:8px; }
+    .a-live { grid-column:2; grid-row:2; border-left:1px solid var(--line); border-top:1px solid var(--line); padding:13px 15px; background:#0e1213; }
+    .live-head { display:flex; justify-content:space-between; align-items:center; }
+    .live-row { display:grid; grid-template-columns:8px 1fr auto; gap:8px; align-items:start; margin-top:9px; font-size:9px; }
+    .pulse { width:7px; height:7px; margin-top:2px; border-radius:50%; background:var(--mint); box-shadow:0 0 8px var(--mint); }
+    .live-row small { color:var(--muted); }.live-row time { color:#64716e; }
+
+    /* B: time is the spine; the map and relationships explain the selected moment. */
+    .variant-b { --bg:#eef1ec; --panel:#fbfcfa; --panel2:#e6ebe5; --ink:#1e2828; --muted:#71807c; --line:rgba(22,43,40,.13); --mint:#197e72; --cyan:#278f87; background:var(--bg); color:var(--ink); color-scheme:light; min-height:100vh; }
+    .variant-b .sidebar { background:#f8faf6; }.variant-b .topbar { background:rgba(248,250,246,.95); }
+    .variant-b .nav-button.active { color:#fff; background:#171b1c; }
+    .variant-b .global-search,.variant-b .top-action,.variant-b .icon-button { color:#1e2828; background:#fff; }
+    .variant-b .global-search input { color:#1e2828; }
+    .variant-b .citation { color:#197e72; border-color:rgba(25,126,114,.3); background:rgba(25,126,114,.06); }
+    .b-layout { min-height:calc(100vh - 66px); display:grid; grid-template-columns:330px minmax(420px,1fr) 294px; }
+    .story-lane { padding:20px 18px 100px; border-right:1px solid var(--line); background:#f8faf6; }
+    .story-lane h1 { margin:6px 0 4px; font:500 28px/1.08 Georgia,serif; }
+    .date-row { display:flex; justify-content:space-between; align-items:center; margin:22px 0 10px; }
+    .event-list { position:relative; padding-left:25px; }
+    .event-list::before { content:""; position:absolute; left:8px; top:8px; bottom:8px; width:1px; background:#aebbb6; }
+    .event-card { position:relative; width:100%; margin-bottom:9px; padding:12px; border:1px solid var(--line); border-radius:12px; background:var(--panel); text-align:left; cursor:pointer; }
+    .event-card::before { content:""; position:absolute; left:-22px; top:17px; width:8px; height:8px; border-radius:50%; background:#f8faf6; border:2px solid #788b86; }
+    .event-card.active { border-color:#55a99f; box-shadow:0 9px 24px rgba(32,72,66,.09); }
+    .event-card.active::before { background:var(--mint); border-color:var(--mint); }
+    .event-time { color:var(--mint); font-size:9px; font-weight:800; letter-spacing:.08em; }
+    .event-card b { display:block; margin:5px 0; font-size:11px; }.event-card p { margin:0; color:var(--muted); font-size:9px; line-height:1.45; }
+    .playback { margin-top:14px; display:flex; gap:7px; }.playback button { flex:1; border:1px solid var(--line); border-radius:9px; background:#fff; padding:8px; cursor:pointer; font-size:9px; }
+    .place-stage { min-width:0; padding:20px 20px 100px; background:#eef1ec; }
+    .place-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:12px; }
+    .place-head h2 { margin:4px 0 0; font:500 22px Georgia,serif; }
+    .map { height:clamp(320px,52vh,500px); position:relative; overflow:hidden; border:1px solid var(--line); border-radius:16px; background-color:#dbe4dc; background-image:linear-gradient(33deg,transparent 47%,rgba(255,255,255,.9) 48% 51%,transparent 52%),linear-gradient(112deg,transparent 45%,rgba(255,255,255,.75) 46% 49%,transparent 50%),linear-gradient(rgba(24,67,61,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(24,67,61,.08) 1px,transparent 1px); background-size:220px 180px,280px 220px,42px 42px,42px 42px; }
+    .river { position:absolute; width:130%; height:70px; left:-15%; top:58%; transform:rotate(-8deg); border-radius:60%; background:#9fcacb; opacity:.8; }
+    .route { position:absolute; left:18%; top:28%; width:58%; height:38%; border:4px solid transparent; border-left-color:#287f75; border-bottom-color:#287f75; border-radius:0 0 0 80px; }
+    .marker { position:absolute; width:28px; height:28px; transform:translate(-50%,-50%); border:3px solid #f8faf6; border-radius:50% 50% 50% 8px; background:var(--mint); rotate:-45deg; box-shadow:0 5px 14px rgba(0,0,0,.18); cursor:pointer; }
+    .marker::after { content:""; position:absolute; inset:7px; border-radius:50%; background:#fff; }
+    .map-label { position:absolute; padding:5px 7px; border-radius:7px; background:rgba(255,255,255,.88); color:#354744; font-size:8px; box-shadow:0 4px 12px rgba(0,0,0,.08); }
+    .moment-detail { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:11px; }
+    .paper { padding:12px; border:1px solid var(--line); border-radius:12px; background:#fbfcfa; }
+    .paper h3 { margin:5px 0 7px; font-size:12px; }.paper p { margin:0; color:var(--muted); font-size:9px; line-height:1.5; }
+    .relation-panel { padding:20px 16px 100px; border-left:1px solid var(--line); background:#f8faf6; }
+    .relation-panel h2 { margin:5px 0 14px; font:500 20px Georgia,serif; }
+    .mini-graph { height:190px; position:relative; border:1px solid var(--line); border-radius:14px; background:#fff; }
+    .mini-graph::before,.mini-graph::after { content:""; position:absolute; height:1px; background:#7c9d97; transform-origin:left center; }
+    .mini-graph::before { left:50%; top:50%; width:36%; transform:rotate(-34deg); }.mini-graph::after { left:48%; top:51%; width:32%; transform:rotate(37deg); }
+    .mini-node { position:absolute; transform:translate(-50%,-50%); padding:7px 9px; border:1px solid #adc2bd; border-radius:999px; background:#fff; color:#293c39; font-size:8px; font-weight:700; }
+    .agent-ticker { margin-top:14px; padding:12px; border:1px solid rgba(25,126,114,.2); border-radius:12px; background:rgba(25,126,114,.05); }
+    .agent-ticker p { color:#536b66; font-size:9px; line-height:1.5; }
+    .agent-ticker button { width:100%; border:1px solid rgba(25,126,114,.24); border-radius:9px; background:#fff; padding:9px; color:#1c5e56; cursor:pointer; font-size:9px; }
+
+    /* C: a search question creates one explainable connection path. */
+    .variant-c { --mint:#f0d69a; --cyan:#7bd6ce; background:#0b0d0e; }
+    .c-layout { min-height:calc(100vh - 66px); padding:24px clamp(22px,4vw,58px) 110px; background:radial-gradient(circle at 50% -15%,rgba(125,104,61,.15),transparent 30%); }
+    .question-box { width:min(850px,100%); margin:0 auto 20px; padding:18px; border:1px solid rgba(240,214,154,.18); border-radius:18px; background:#151718; box-shadow:var(--shadow); }
+    .question-row { display:grid; grid-template-columns:24px 1fr auto; gap:10px; align-items:center; }
+    .question-row input { min-width:0; border:0; outline:0; background:transparent; color:var(--ink); font:400 clamp(18px,2.4vw,27px) Georgia,serif; }
+    .question-row button { border:0; border-radius:10px; padding:9px 13px; background:var(--mint); color:#211d15; cursor:pointer; font-weight:800; }
+    .suggestions { display:flex; gap:7px; margin-top:14px; overflow:auto; }.suggestions button { white-space:nowrap; border:1px solid var(--line); border-radius:999px; padding:6px 9px; background:transparent; color:var(--muted); cursor:pointer; font-size:9px; }
+    .trail-head { width:min(950px,100%); margin:0 auto 10px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .trail-head h1 { margin:5px 0 0; font:400 29px Georgia,serif; }
+    .connection-trail { width:min(950px,100%); margin:auto; display:grid; grid-template-columns:1fr 90px 1fr 90px 1fr; align-items:center; }
+    .trail-card { min-height:230px; padding:16px; border:1px solid var(--line); border-radius:16px; background:#151819; }
+    .trail-card.focus { border-color:rgba(240,214,154,.4); box-shadow:0 0 0 4px rgba(240,214,154,.04); }
+    .trail-icon { width:43px; height:43px; border-radius:13px; display:grid; place-items:center; background:#242728; color:var(--mint); margin-bottom:26px; font-weight:900; }
+    .trail-card h2 { margin:5px 0 9px; font:400 20px Georgia,serif; }.trail-card p { color:#a7aeab; font-size:10px; line-height:1.55; }
+    .trail-link { position:relative; height:1px; background:linear-gradient(90deg,var(--mint),var(--cyan)); }
+    .trail-link::after { content:""; position:absolute; right:0; top:-3px; border-left:6px solid var(--cyan); border-top:3px solid transparent; border-bottom:3px solid transparent; }
+    .trail-link span { position:absolute; left:50%; bottom:9px; transform:translateX(-50%); width:86px; text-align:center; color:var(--muted); font-size:8px; }
+    .context-strip { width:min(950px,100%); margin:13px auto 0; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    .context-card { min-height:148px; padding:13px; border:1px solid var(--line); border-radius:13px; background:#111415; }
+    .context-card h3 { margin:5px 0 9px; font-size:11px; }.context-card p { margin:0; color:var(--muted); font-size:9px; line-height:1.5; }
+    .spark-map { height:72px; position:relative; overflow:hidden; border-radius:9px; background:linear-gradient(125deg,transparent 42%,rgba(255,255,255,.09) 43% 47%,transparent 48%),#192223; }
+    .spark-map::after { content:""; position:absolute; left:63%; top:38%; width:11px; height:11px; border:2px solid var(--mint); border-radius:50%; box-shadow:0 0 0 6px rgba(240,214,154,.08); }
+    .mini-time { display:grid; grid-template-columns:42px 1fr; gap:8px; align-items:start; padding:6px 0; border-top:1px solid var(--line); font-size:8px; }.mini-time time { color:var(--mint); }
+    .run-step { display:grid; grid-template-columns:7px 1fr; gap:7px; margin:8px 0; font-size:8px; }.run-step i { width:6px; height:6px; margin-top:2px; border-radius:50%; background:var(--cyan); }
+
+    .overlay { position:fixed; inset:0; z-index:80; padding:24px; display:grid; place-items:center; background:rgba(3,6,7,.73); backdrop-filter:blur(8px); }
+    .modal { width:min(760px,100%); max-height:90vh; overflow:auto; padding:20px; border:1px solid rgba(255,255,255,.13); border-radius:18px; background:#121718; box-shadow:0 30px 100px rgba(0,0,0,.58); }
+    .modal.light { background:#fbfcfa; color:#1e2828; }.modal.light .modal-sub,.modal.light .tool-detail { color:#63736f; }
+    .modal-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:15px; }.modal-head h2 { margin:5px 0; font:400 25px Georgia,serif; }
+    .close { border:1px solid var(--line); border-radius:9px; background:transparent; padding:7px 10px; cursor:pointer; }
+    .search-results { display:grid; grid-template-columns:1fr 1fr; gap:9px; }.result { padding:12px; border:1px solid var(--line); border-radius:11px; background:rgba(255,255,255,.025); }.result b { font-size:11px; }.result p { color:var(--muted); font-size:9px; line-height:1.45; }
+    .agent-tree { display:grid; grid-template-columns:1fr 1fr; gap:10px; }.agent-card { padding:13px; border:1px solid var(--line); border-radius:12px; background:#171c1d; }.agent-card.parent { grid-column:1/-1; border-color:rgba(174,240,222,.25); }.agent-card h3 { margin:4px 0 10px; font-size:12px; }
+    .tool-call { padding:9px 0; border-top:1px solid var(--line); }.tool-call b { display:block; font-size:9px; }.tool-detail { display:block; margin-top:3px; color:var(--muted); font:8px/1.45 ui-monospace,monospace; }
+    .browser-frame { margin-top:13px; border:1px solid var(--line); border-radius:12px; overflow:hidden; }.browser-bar { display:flex; gap:8px; align-items:center; padding:8px 10px; background:#22292a; color:#9eaaa7; font-size:8px; }.browser-page { min-height:150px; padding:16px; background:#eef1ec; color:#24302e; }.browser-page h3 { margin:0 0 8px; font:500 18px Georgia,serif; }.browser-page p { max-width:580px; color:#65736f; font-size:9px; line-height:1.55; }
+    .modal-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }.modal-actions button { border:1px solid var(--line); border-radius:9px; background:#171c1d; padding:8px 10px; cursor:pointer; font-size:9px; }.modal-actions .danger { color:#ff9e9e; }
+    .artifact-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:12px; }.artifact-copy { padding:4px; }.artifact-copy h3 { margin:5px 0 9px; font:400 20px Georgia,serif; }.artifact-copy p { color:var(--muted); font-size:10px; line-height:1.6; }
+    .switcher { position:fixed; z-index:90; left:50%; bottom:18px; transform:translateX(-50%); display:grid; grid-template-columns:38px auto 38px; align-items:center; padding:5px; border:1px solid rgba(0,0,0,.15); border-radius:999px; background:#f4f7f6; color:#152023; box-shadow:0 12px 36px rgba(0,0,0,.35); }
+    .switcher button { width:36px; height:34px; border:0; border-radius:50%; background:transparent; color:#152023; cursor:pointer; font-size:18px; }.switcher button:hover { background:#dfe8e5; }.switcher-label { min-width:180px; padding:0 10px; text-align:center; font-size:12px; font-weight:750; }
+    .prototype-state { position:fixed; z-index:70; right:12px; bottom:12px; width:min(300px,calc(100vw - 24px)); border:1px solid rgba(255,255,255,.14); border-radius:10px; background:rgba(8,12,14,.95); box-shadow:var(--shadow); }
+    .state-toggle { width:100%; padding:9px 11px; border:0; background:transparent; color:#85938f; text-align:left; cursor:pointer; font-size:9px; letter-spacing:.1em; text-transform:uppercase; }.state-toggle::before { content:"\25B8  "; }.prototype-state.expanded .state-toggle::before { content:"\25BE  "; }.prototype-state pre { max-height:180px; overflow:auto; margin:0; padding:0 11px 11px; white-space:pre-wrap; color:#dce7e4; font:9px/1.45 ui-monospace,monospace; }
+    .toast { position:fixed; z-index:100; top:78px; left:50%; transform:translateX(-50%); padding:9px 12px; border-radius:9px; background:#eef5f3; color:#172224; box-shadow:var(--shadow); font-size:10px; }
+    @media (max-width:1180px) { .shell { grid-template-columns:220px minmax(0,1fr); }.a-layout { grid-template-columns:1fr 260px; }.b-layout { grid-template-columns:300px 1fr; }.relation-panel { display:none; }.connection-trail { grid-template-columns:1fr 60px 1fr 60px 1fr; }.trail-card { min-height:250px; } }
+    @media (max-width:860px) { .shell { grid-template-columns:1fr; }.sidebar { display:none; }.case-title,.top-action { display:none; }.global-search { width:100%; }.a-layout { height:auto; grid-template-columns:1fr; grid-template-rows:560px auto auto; }.a-inspector { border-left:0; border-top:1px solid var(--line); }.a-timeline,.a-live { grid-column:1; grid-row:auto; }.b-layout { grid-template-columns:1fr; }.story-lane { border-right:0; }.place-stage { padding-top:0; }.connection-trail { grid-template-columns:1fr; gap:8px; }.trail-link { width:1px; height:42px; margin:auto; }.trail-link span { left:12px; bottom:14px; transform:none; text-align:left; }.context-strip { grid-template-columns:1fr; }.prototype-state { display:none; }.artifact-grid,.search-results,.agent-tree { grid-template-columns:1fr; }.agent-card.parent { grid-column:auto; } }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="overlay-root"></div>
+  <aside class="prototype-state">
+    <button class="state-toggle" type="button" data-action="state" aria-expanded="false">Prototype state</button>
+    <pre id="state-output" hidden></pre>
+  </aside>
+  <nav class="switcher" aria-label="Prototype variants">
+    <button type="button" data-switch="prev" aria-label="Previous variant">‹</button>
+    <div class="switcher-label" id="switcher-label"></div>
+    <button type="button" data-switch="next" aria-label="Next variant">›</button>
+  </nav>
+  <script>
+    const icons = {
+      search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+      file:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5"/>',
+      folder:'<path d="M3 6h7l2 2h9v10H3z"/>',
+      graph:'<circle cx="5" cy="12" r="2"/><circle cx="18" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><path d="m7 11 9-5M7 13l10 5"/>',
+      map:'<path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"/>',
+      history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v6l4 2"/>',
+      settings:'<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a8 8 0 0 0-1.7-1L14.5 3h-5l-.4 3.1a8 8 0 0 0-1.7 1L5 6.1 3 9.5 5.1 11a7 7 0 0 0 0 2L3 14.5 5 18l2.4-1a8 8 0 0 0 1.7 1l.4 3h5l.4-3a8 8 0 0 0 1.7-1l2.4 1 2-3.5-2.1-1.5a7 7 0 0 0 .1-1z"/>',
+      agent:'<rect x="5" y="7" width="14" height="11" rx="3"/><path d="M12 3v4M9 12h.01M15 12h.01M9 21v-3M15 21v-3"/>',
+      target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>'
+    };
+    const icon = name => `<svg viewBox="0 0 24 24" aria-hidden="true">${icons[name]}</svg>`;
+    const params = new URLSearchParams(location.search);
+    const initialVariant = ['A','B','C'].includes(params.get('variant')) ? params.get('variant') : 'A';
+    const state = {
+      variant: initialVariant,
+      selectedEntity: 'Northline Station',
+      selectedEvent: '20:42 · Station camera',
+      timeWindow: 'August 18 · 19:30–22:15',
+      search: '',
+      graphDepth: 2,
+      activeView: 'Graph',
+      playback: 'Paused',
+      visibleAgents: 3,
+      caseId: 'M-1042',
+      fictionalData: true
+    };
+    const variants = {
+      A:{name:'Network canvas',render:renderA},
+      B:{name:'Case playback',render:renderB},
+      C:{name:'Connection trail',render:renderC}
+    };
+
+    function sidebar() {
+      return `<nav class="sidebar" aria-label="Primary">
+        <div class="brand"><div class="brand-mark">AS</div><div><b>AI OSINT Spider</b><small>Investigation workspace</small></div></div>
+        <div class="nav-label">Workspace</div>
+        <button class="nav-button">${icon('file')}<span>Case brief</span></button>
+        <button class="nav-button">${icon('folder')}<span>Case material</span></button>
+        <button class="nav-button active">${icon('graph')}<span>Investigation views</span></button>
+        <button class="nav-button">${icon('history')}<span>Case history</span></button>
+        <div class="nav-label">Recent Cases</div>
+        <button class="case-button active"><span class="mini-avatar">RM</span><span><b>Riley Mercer</b><small>M-1042 · Missing person</small></span><span class="case-state"></span></button>
+        <button class="case-button"><span class="mini-avatar">NH</span><span><b>North Harbor</b><small>CY-302 · Cyber</small></span></button>
+        <button class="case-button"><span class="mini-avatar">LC</span><span><b>Ledger Coast</b><small>FI-091 · Financial</small></span></button>
+        <span class="spacer"></span>
+        <button class="nav-button">${icon('settings')}<span>Settings and Skills</span></button>
+        <div class="profile"><span class="avatar">AM</span><span><b>Alex Morgan</b><small>Investigator</small></span></div>
+      </nav>`;
+    }
+    function topbar(light=false) {
+      return `<header class="topbar"><div class="case-title"><b>Riley Mercer</b><span>M-1042 · Fictional demo</span></div><label class="global-search">${icon('search')}<input data-search placeholder="Search every Case, Entity, Artifact, or Finding" value="${state.search}"/><span class="scope">Global</span></label><button class="top-action" data-action="agent">${icon('agent')} Live work · 3</button><button class="icon-button" aria-label="Case settings">${icon('settings')}</button></header>`;
+    }
+    function shell(content,cls='') { return `<section class="shell ${cls}">${sidebar()}<main class="main">${topbar()}${content}</main></section>`; }
+    function citation(id){return `<button class="citation" data-preview="${id}">${id}</button>`;}
+    function confidence(score,label=score+'%'){return `<span class="confidence"><i style="--score:${score}%"></i>${label}</span>`;}
+
+    function graphNodes() {
+      const nodes=[
+        ['Riley Mercer','Person · Seed','Verified identity','50%','47%','person seed'],
+        ['Northline Station','Place','2 supporting Artifacts','27%','29%','selected'],
+        ['Station camera 04','Artifact','Complete capture · E-14','20%','61%',''],
+        ['Transit receipt','Artifact','User provided · E-07','48%','76%',''],
+        ['East platform','Place','Inference · 72%','70%','28%','alert'],
+        ['riley.m','Account','Candidate Entity · O-22','79%','57%','alert'],
+        ['Service 411','Event','Delay at 20:46','68%','78%','']
+      ];
+      return nodes.map(n=>`<button class="node ${n[5]}" style="left:${n[3]};top:${n[4]}" data-entity="${n[0]}"><span class="type">${n[1]}</span><b>${n[0]}</b><small>${n[2]}</small></button>`).join('');
+    }
+    function renderA(){
+      return shell(`<div class="a-layout"><section class="graph-workbench"><div class="view-toolbar"><div class="view-tabs"><button class="active" data-view="Graph">Graph</button><button data-view="Map">Map</button><button data-view="Timeline">Timeline</button></div><span class="pill">2 hops from Seed information</span><span class="toolbar-note">7 shown · 18 hidden by time filter</span></div>
+        <svg class="graph-lines" viewBox="0 0 1000 650" preserveAspectRatio="none"><line class="strong" x1="500" y1="305" x2="270" y2="188"/><line class="strong" x1="270" y1="188" x2="200" y2="397"/><line x1="500" y1="305" x2="480" y2="494"/><line class="possible" x1="500" y1="305" x2="790" y2="371"/><line class="possible" x1="500" y1="305" x2="700" y2="182"/><line x1="480" y1="494" x2="680" y2="507"/><line x1="700" y1="182" x2="680" y2="507"/></svg>${graphNodes()}<div class="graph-legend"><span>Supported relationship</span><span>Proposed relationship</span></div></section>
+        <aside class="a-inspector"><div class="inspector-head"><div><div class="eyebrow">Selected place</div><h2 id="entity-name">${state.selectedEntity}</h2><span class="pill good">Supported</span></div><button class="icon-button">•••</button></div><div class="preview-image" data-preview="E-14"></div><div class="fact"><b>Why it is connected</b><p>Two Artifacts place Riley at Northline Station. One later route remains an Inference.</p></div><div class="fact"><b>Source agreement</b>${confidence(86,'86% · 2 independent Sources')}</div><div class="fact"><b>Evidence links</b><p>${citation('E-14')} supports observed location<br/>${citation('E-07')} supports time window</p></div><button class="source-card" data-preview="E-14"><span class="source-icon">IMG</span><span><b>Station camera 04</b><small>Complete capture · SHA-256 verified</small></span></button><button class="source-card" data-preview="O-22"><span class="source-icon">WEB</span><span><b>Candidate profile</b><small>Inference · Needs review</small></span></button></aside>
+        <section class="a-timeline"><div style="display:flex;justify-content:space-between"><div><div class="eyebrow">Synchronized timeline</div><b class="fine">${state.timeWindow}</b></div><button class="pill" data-action="play">▶ ${state.playback}</button></div><div class="time-scale"><div class="time-line"></div><div class="time-window"></div><button class="time-event" style="left:18%" data-event="19:51 · Profile inactive"><span>19:51 Profile inactive</span></button><button class="time-event" style="left:48%" data-event="20:42 · Station camera"><span>20:42 Camera</span></button><button class="time-event" style="left:63%" data-event="20:46 · Service delay"><span>20:46 Delay</span></button><button class="time-event" style="left:84%" data-event="21:18 · Unverified sighting"><span>21:18 Sighting?</span></button></div></section>
+        <aside class="a-live"><div class="live-head"><div class="eyebrow">Live Research run</div><button class="pill" data-action="agent">Open all</button></div><div class="live-row"><i class="pulse"></i><span><b>Transit researcher</b><br/><small>Browser · reading service archive</small></span><time>now</time></div><div class="live-row"><i class="pulse" style="background:var(--blue)"></i><span><b>Identity researcher</b><br/><small>Connector · comparing candidates</small></span><time>8s</time></div></aside></div>`);
+    }
+
+    function renderB(){
+      return shell(`<div class="b-layout"><aside class="story-lane"><div class="eyebrow">Case playback</div><h1>Reconstruct the evening</h1><p class="muted fine">Select a moment. Place and relationships update together.</p><div class="date-row"><b class="fine">August 18</b><span class="pill good">5 supported moments</span></div><div class="event-list">
+        <button class="event-card"><span class="event-time">19:51</span><b>Public profile becomes inactive</b><p>Captured account state. Identity link still needs review.</p></button>
+        <button class="event-card active"><span class="event-time">20:42</span><b>Riley appears at Northline Station</b><p>Camera and transit receipt agree on place and time.</p></button>
+        <button class="event-card"><span class="event-time">20:46</span><b>Eastbound service is delayed</b><p>Public notice supports a possible route, not boarding.</p></button>
+        <button class="event-card"><span class="event-time">21:18</span><b>Unverified sighting reported</b><p>User-provided note. No independent Source yet.</p></button></div><div class="playback"><button data-action="play">▶ Play 1×</button><button>Compare day</button></div></aside>
+        <main class="place-stage"><div class="place-head"><div><div class="eyebrow">Selected moment · 20:42</div><h2>Northline Station</h2></div><div style="display:flex;gap:7px"><span class="pill good">Confirmed Finding</span>${confidence(92,'High agreement')}</div></div><div class="map"><div class="river"></div><div class="route"></div><button class="marker" style="left:42%;top:45%" aria-label="Northline Station" data-entity="Northline Station"></button><span class="map-label" style="left:45%;top:37%">Northline Station · 20:42</span><button class="marker" style="left:70%;top:28%;background:#e9a94e" aria-label="East platform" data-entity="East platform"></button><span class="map-label" style="left:72%;top:19%">East platform · Inference</span></div><div class="moment-detail"><article class="paper"><div class="eyebrow">What is supported</div><h3>Two Sources agree</h3><p>Camera ${citation('E-14')} and receipt ${citation('E-07')} place Riley inside the station during the same window.</p></article><article class="paper"><div class="eyebrow">What remains open</div><h3>Direction of travel</h3><p>The eastbound route is plausible at 72%, but no Artifact shows boarding.</p></article></div></main>
+        <aside class="relation-panel"><div class="eyebrow">Relationships at 20:42</div><h2>Only what existed then</h2><div class="mini-graph"><span class="mini-node" style="left:50%;top:50%">Riley</span><span class="mini-node" style="left:17%;top:25%">Camera 04</span><span class="mini-node" style="left:78%;top:22%">Station</span><span class="mini-node" style="left:79%;top:78%">Receipt</span></div><div class="fact"><b>Time filter effect</b><p>3 later Claims and 11 unrelated Entities are hidden.</p></div><div class="agent-ticker"><div class="eyebrow">Agent watching playback</div><p>Transit researcher found one schedule change near this moment. It remains a proposed Lead.</p><button data-action="agent">Watch live work</button></div></aside></div>`, 'variant-b');
+    }
+
+    function renderC(){
+      return shell(`<div class="c-layout"><section class="question-box"><div class="eyebrow">Ask across every Case and source</div><div class="question-row">${icon('search')}<input data-search placeholder="How is Riley connected to the east platform?" value="${state.search}"/><button data-action="search">Trace</button></div><div class="suggestions"><button data-query="Where was Riley last confirmed?">Last confirmed location</button><button data-query="Which account links need review?">Account links needing review</button><button data-query="What changed after 20:42?">What changed after 20:42</button></div></section>
+        <header class="trail-head"><div><div class="eyebrow">Explainable connection path</div><h1>Riley to the east platform</h1></div><div style="display:flex;gap:7px"><span class="pill">2 hops</span><span class="pill warn">Ends in an Inference</span></div></header>
+        <section class="connection-trail"><article class="trail-card focus"><div class="trail-icon">RM</div><div class="eyebrow">Person · Seed Entity</div><h2>Riley Mercer</h2><p>Identity supported by user-provided material. No automated Entity merge.</p><span class="pill good">Reviewed</span></article><div class="trail-link"><span>observed at · ${citation('E-14')}</span></div><article class="trail-card"><div class="trail-icon">NL</div><div class="eyebrow">Place · Finding</div><h2>Northline Station</h2><p>Camera and receipt agree on location and time.</p>${confidence(92,'92% agreement')}</article><div class="trail-link"><span>possible route · ${citation('I-09')}</span></div><article class="trail-card"><div class="trail-icon">EP</div><div class="eyebrow">Place · Inference</div><h2>East platform</h2><p>Service notice and platform geometry support the route. Boarding is not shown.</p><span class="pill warn">Needs review</span></article></section>
+        <section class="context-strip"><article class="context-card"><div class="eyebrow">Where this happened</div><h3>Map context</h3><div class="spark-map"></div><button class="citation" style="margin-top:8px" data-entity="Northline Station">Open synchronized map</button></article><article class="context-card"><div class="eyebrow">When it happened</div><h3>Timeline context</h3><div class="mini-time"><time>20:42</time><span>Camera observation</span></div><div class="mini-time"><time>20:46</time><span>Service delay begins</span></div><div class="mini-time"><time>21:18</time><span>Unverified sighting</span></div></article><article class="context-card"><div class="eyebrow">Live agent context</div><h3>How the trail was built</h3><div class="run-step"><i></i><span>Parent agent selected 2 cited Claims</span></div><div class="run-step"><i></i><span>Transit subagent is checking route data</span></div><button class="citation" data-action="agent">Open live work</button></article></section></div>`, 'variant-c');
+    }
+
+    function render(){
+      document.getElementById('app').innerHTML=variants[state.variant].render();
+      document.getElementById('switcher-label').textContent=`${state.variant} · ${variants[state.variant].name}`;
+      document.getElementById('state-output').textContent=JSON.stringify(state,null,2);
+    }
+    function switchVariant(direction){
+      const keys=Object.keys(variants); const next=(keys.indexOf(state.variant)+direction+keys.length)%keys.length;
+      state.variant=keys[next]; const url=new URL(location.href); url.searchParams.set('variant',state.variant); history.replaceState({},'',url); closeOverlay(); render();
+    }
+    function showSearch(query){
+      state.search=query || document.querySelector('[data-search]')?.value || '';
+      document.getElementById('overlay-root').innerHTML=`<div class="overlay" role="dialog" aria-modal="true" aria-label="Global search results"><section class="modal ${state.variant==='B'?'light':''}"><div class="modal-head"><div><div class="eyebrow">Global search · 6 matches in 3 Cases</div><h2>${state.search || 'Search results'}</h2><div class="modal-sub fine">Results respect Case access and keep each match in its original context.</div></div><button class="close" data-close>Close</button></div><div class="search-results"><article class="result"><span class="pill good">Finding · M-1042</span><h3>Northline Station</h3><p>Last supported location for Riley Mercer. Two Evidence links.</p></article><article class="result"><span class="pill inference">Inference · M-1042</span><h3>East platform</h3><p>Possible route with 72% source agreement. Needs investigator review.</p></article><article class="result"><span class="pill">Artifact · M-1042</span><h3>Station camera 04</h3><p>Image capture with complete provenance and verified digest.</p></article><article class="result"><span class="pill">Entity · CY-302</span><h3>Northline relay</h3><p>Access permitted through the North Harbor Case.</p></article></div></section></div>`;
+      syncState();
+    }
+    function showArtifact(id){
+      document.getElementById('overlay-root').innerHTML=`<div class="overlay" role="dialog" aria-modal="true" aria-label="Artifact preview"><section class="modal ${state.variant==='B'?'light':''}"><div class="modal-head"><div><div class="eyebrow">Artifact preview · ${id}</div><h2>Station camera 04</h2><div class="modal-sub fine">Complete capture · Collected August 19, 09:13 · Fictional demo</div></div><button class="close" data-close>Close</button></div><div class="artifact-grid"><div class="preview-image"></div><div class="artifact-copy"><div class="eyebrow">Why it appears here</div><h3>Supports the location Claim</h3><p>The timestamp and visible station markers support Riley's presence at Northline Station. The image does not establish boarding or later direction of travel.</p><div class="fact"><b>Source confidence</b>${confidence(92,'High · 92%')}</div><div class="fact"><b>Integrity</b><p>SHA-256 verified · Original preserved · OCR derivative linked</p></div></div></div></section></div>`;
+    }
+    function showAgent(){
+      document.getElementById('overlay-root').innerHTML=`<div class="overlay" role="dialog" aria-modal="true" aria-label="Live Research run"><section class="modal"><div class="modal-head"><div><div class="eyebrow">Live Research run</div><h2>Transit and identity research</h2><div class="modal-sub fine">Codex · GPT-5.6 · Research within limits · 18 minutes remain</div></div><button class="close" data-close>Close</button></div><div class="agent-tree"><article class="agent-card parent"><div class="eyebrow">Parent agent · Running</div><h3>Coordinating two visible subagents</h3><div class="tool-call"><b>Case query</b><span class="tool-detail">Read 14 authorized Claims and 9 Artifacts. No external side effect.</span></div></article><article class="agent-card"><div class="eyebrow">Transit researcher · Browser active</div><h3>Checking service notices</h3><div class="tool-call"><b>browser.open</b><span class="tool-detail">northline.example/archive/aug-18</span></div><div class="tool-call"><b>capture.readable_text</b><span class="tool-detail">2 of 5 pages checked · safe output visible</span></div></article><article class="agent-card"><div class="eyebrow">Identity researcher · Connector active</div><h3>Comparing candidate accounts</h3><div class="tool-call"><b>username.lookup</b><span class="tool-detail">8 candidates · public Sources only</span></div><div class="tool-call"><b>entity.propose_match</b><span class="tool-detail">1 proposal · merge not permitted</span></div></article></div><div class="browser-frame"><div class="browser-bar"><span class="pulse"></span> Live browser · northline.example/archive/aug-18 · Read only</div><div class="browser-page"><div class="eyebrow" style="color:#287f75">Public transit archive</div><h3>Service notice · August 18</h3><p>Eastbound service experienced a platform change beginning at 20:46. The agent is preserving the page and recording the capture limit before extracting a proposed route Claim.</p></div></div><div class="modal-actions"><button>Pause selected</button><button>Stop selected</button><button class="danger">Emergency stop all</button></div></section></div>`;
+    }
+    function closeOverlay(){document.getElementById('overlay-root').innerHTML='';}
+    function syncState(){document.getElementById('state-output').textContent=JSON.stringify(state,null,2);}
+    function toast(message){const n=document.createElement('div');n.className='toast';n.textContent=message;document.body.appendChild(n);setTimeout(()=>n.remove(),1900);}
+
+    document.addEventListener('click',event=>{
+      const target=event.target.closest('button,[data-preview]'); if(!target)return;
+      if(target.dataset.switch)switchVariant(target.dataset.switch==='next'?1:-1);
+      if(target.dataset.action==='state'){const panel=target.closest('.prototype-state');const expanded=panel.classList.toggle('expanded');panel.querySelector('pre').hidden=!expanded;target.setAttribute('aria-expanded',String(expanded));}
+      if(target.dataset.action==='agent')showAgent();
+      if(target.dataset.action==='search')showSearch();
+      if(target.dataset.action==='play'){state.playback=state.playback==='Playing'?'Paused':'Playing';syncState();toast(`Playback ${state.playback.toLowerCase()}`);}
+      if(target.dataset.preview)showArtifact(target.dataset.preview);
+      if(target.dataset.entity){state.selectedEntity=target.dataset.entity;syncState();toast(`${state.selectedEntity} selected across graph, map, and timeline`);document.querySelectorAll('.node').forEach(n=>n.classList.toggle('selected',n.dataset.entity===state.selectedEntity));const label=document.getElementById('entity-name');if(label)label.textContent=state.selectedEntity;}
+      if(target.dataset.event){state.selectedEvent=target.dataset.event;syncState();toast(`${state.selectedEvent} selected`);}
+      if(target.dataset.view){state.activeView=target.dataset.view;syncState();toast(`${state.activeView} view selected`);document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===state.activeView));}
+      if(target.dataset.query){const input=document.querySelector('[data-search]');if(input)input.value=target.dataset.query;showSearch(target.dataset.query);}
+      if(target.hasAttribute('data-close'))closeOverlay();
+    });
+    document.addEventListener('keydown',event=>{
+      if(event.key==='Escape')closeOverlay();
+      const editing=event.target.matches('input,textarea,select,[contenteditable]');
+      if(!editing&&event.key==='ArrowLeft')switchVariant(-1);
+      if(!editing&&event.key==='ArrowRight')switchVariant(1);
+      if(event.key==='Enter'&&event.target.matches('[data-search]'))showSearch(event.target.value);
+    });
+    document.getElementById('overlay-root').addEventListener('click',event=>{if(event.target.classList.contains('overlay'))closeOverlay();});
+    render();
+  </script>
+</body>
+</html>
