@@ -10,6 +10,8 @@ Primary-source prototype: [`prototype/issue-13-investigation-views`](https://git
 
 Use the graph-first Network canvas as the primary investigation view. Keep the approved expanded Case sidebar. Place the Relationship graph in the main work area, an Entity inspector beside it, a synchronized Timeline below it, and a compact live Research run panel beside the Timeline.
 
+The October 15 theme requirement uses a dark grayscale interface. Follow the [grayscale dark-theme guidance](grayscale-dark-theme.md), with labeled node types, distinct shapes, solid and dashed Relationships, directional arrowheads, and visible focus and selection markers. Original evidence and source imagery retain their colors.
+
 The graph is an investigative workspace, not a decorative diagram. Every displayed Entity and Relationship must lead back to its Claims, Evidence links, Artifacts, Sources, review state, and discovery path from Seed information.
 
 ## Relationship graph

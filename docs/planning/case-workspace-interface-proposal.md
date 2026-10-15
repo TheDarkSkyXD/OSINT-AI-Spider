@@ -10,6 +10,8 @@ Primary-source prototype: [`prototype/issue-12-case-workspace`](https://github.c
 
 Use the prototype's Briefing room direction as the default Case workspace. Keep its calm, narrative-first Case summary and progressive disclosure, but use a permanently expanded, labeled desktop sidebar instead of an icon-only or collapsed rail.
 
+The October 15 theme requirement uses a dark grayscale interface. Apply the [grayscale dark-theme guidance](grayscale-dark-theme.md) to the selected layout. Original evidence colors remain intact, and statuses use labels and icons rather than colored accents.
+
 The interface should help a new investigator understand the supported account first while keeping the underlying material, Relationship graph, Case history, model, instructions, Skills, and live Research run one deliberate action away. Expert capability should remain available without turning the default view into a database table or a dense control surface.
 
 ## Desktop structure

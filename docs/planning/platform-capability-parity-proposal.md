@@ -12,6 +12,8 @@ Installed applications support accountless local Cases with manual Portable Case
 
 The Case brief uses the approved narrative layout and expanded labeled sidebar in web and Electron. Investigation views use the approved Network canvas. Mobile presents its supported features through navigation sheets and focused screens. Provider credentials for CLI subscriptions stay on the desktop or attached Runner. Optional supported API providers can execute on an eligible local or managed worker.
 
+Web and Electron share the user's selected [dark grayscale theme](grayscale-dark-theme.md). Supported mobile features use the same semantic palette. System accessibility color overrides remain available, and original evidence colors are preserved.
+
 This document specifies product behavior. Exact operating-system versions, mobile frameworks, packaging, browser compatibility, and background-service mechanisms require verification during implementation.
 
 ## Capability matrix
