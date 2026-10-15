@@ -1,0 +1,5 @@
+# Local-first clients with a private managed cloud
+
+AI OSINT Spider provides accountless local Cases through its open-source clients and local runtime, while authenticated real-time sync, hosted web access, collaboration, recovery, and managed jobs are paid services hosted by the project. Each Case has one authoritative host at a time, and managed Cases may be decrypted inside the trusted managed runtime; Codex and Claude subscription credentials remain on attached user-controlled Runners. The managed backend is not published or supported for self-hosting, while portable Case export prevents data lock-in and keeps the free local product useful.
+
+The October 15, 2026 platform clarification requires web and Electron to expose the same product features. A browser on the user's computer may use the compatible local runtime for accountless local workflows and native execution capabilities. This local browser interface does not provide a self-hosted managed service or cross-device synchronization. Mobile includes only features that are easy to use and present clearly on its supported screens.

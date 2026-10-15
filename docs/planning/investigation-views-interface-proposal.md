@@ -59,7 +59,7 @@ Users with permission can pause or stop one branch, or stop the entire Research 
 
 - Wide desktop keeps the graph, inspector, Timeline, and compact live-work panel visible.
 - Narrow desktop preserves the expanded labeled sidebar. The inspector becomes a labeled drawer while the Timeline remains attached to the graph.
-- Mobile uses a full labeled navigation sheet and one view at a time. Selection stays synchronized when the user moves between Graph, Timeline, Map, inspector, and live work.
+- Web and Electron provide the complete investigation feature set. Mobile includes only views and actions that remain easy to use and visually clear. Selection stays synchronized between supported views. Dense analysis, complex graph editing, and other unsuitable workflows remain on web and Electron under the [platform capability decision](platform-capability-parity-proposal.md).
 
 ## Acceptance criteria
 

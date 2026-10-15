@@ -26,7 +26,7 @@ The sidebar destinations are Case brief, Case material, Relationship graph, Map 
 
 - Wide desktop keeps all three regions visible.
 - Narrow desktop keeps the expanded labeled sidebar and narrative canvas; Case pulse moves into the canvas or a labeled panel.
-- Mobile uses a full labeled navigation sheet opened from the header. It does not introduce an icon-only collapsed rail. The Case brief becomes a single readable column, and Case pulse follows the summary.
+- Web and Electron expose the same product features. Mobile uses a labeled navigation sheet and readable focused screens for supported features. Features that cannot be made easy to use and visually clear are omitted from mobile under the [platform capability decision](platform-capability-parity-proposal.md).
 
 ## Interaction rules
 

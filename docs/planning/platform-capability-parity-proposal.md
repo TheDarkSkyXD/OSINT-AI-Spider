@@ -1,14 +1,16 @@
 # Electron, web, and mobile capability parity
 
-Status: approved October 15, 2026. The user selected all four recommended choices.
+Status: approved October 15, 2026. Revised after the user required web and Electron feature parity and selective mobile availability.
 
 Decision ticket: [Define Electron, web, and mobile capability parity](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/18).
 
 ## Established requirements
 
-Electron is the desktop application for Windows and Linux. Web and mobile are full clients for managed Cases. Installed applications also support accountless local Cases with manual Portable Case archive export and import. Paid authentication enables managed synchronization, collaboration, and hosted services. Each Case has one authoritative host.
+Electron is the desktop application for Windows and Linux. Web and Electron provide the same product features. Mobile includes a feature only when its interface is easy to use and presents the information clearly on a small screen. This replaces the earlier commitment to full mobile feature parity.
 
-The Case brief uses the approved narrative layout and expanded labeled desktop sidebar. Investigation views use the approved Network canvas. Mobile presents the same information and actions through navigation sheets and focused screens. Provider credentials for CLI subscriptions stay on the desktop or attached Runner. Optional supported API providers can execute on an eligible local or managed worker.
+Installed applications support accountless local Cases with manual Portable Case archive export and import. The web client can provide the same local Case workflows through a compatible local runtime on the user's computer. The hosted web service and managed synchronization, collaboration, and hosted jobs require a paid account. Accessing the local runtime from a browser on that computer does not introduce a self-hosted managed service or cross-device synchronization. Each Case retains one authoritative host.
+
+The Case brief uses the approved narrative layout and expanded labeled sidebar in web and Electron. Investigation views use the approved Network canvas. Mobile presents its supported features through navigation sheets and focused screens. Provider credentials for CLI subscriptions stay on the desktop or attached Runner. Optional supported API providers can execute on an eligible local or managed worker.
 
 This document specifies product behavior. Exact operating-system versions, mobile frameworks, packaging, browser compatibility, and background-service mechanisms require verification during implementation.
 
@@ -16,32 +18,44 @@ This document specifies product behavior. Exact operating-system versions, mobil
 
 Every capability remains subject to the user's Case role, applicable policy, provider configuration, and service entitlement.
 
+For the same Case, permissions, and connected execution capabilities, a product feature available in Electron must also be available in web. OS integration and execution location may differ. A web action that needs a native capability uses the compatible local runtime or attached Runner and explains that requirement. An unavailable Runner is a missing execution prerequisite, not a web feature exclusion.
+
+Mobile entries below describe candidates and boundaries for workflow validation. They do not require porting every desktop action to a phone. A feature that fails the mobile usability criteria is omitted from mobile navigation and offered on web or Electron instead.
+
 | Workflow | Electron on Windows and Linux | Web | Mobile |
 | --- | --- | --- | --- |
-| Create and organize local Cases without an account | Yes | Managed Cases only | Yes |
+| Create and organize local Cases without an account | Yes | Yes, through a compatible local runtime on the same computer | Simple local workflows |
 | Create, organize, and collaborate on managed Cases | Yes | Yes | Yes |
-| Add Seed information, documents, images, and links | File picker, paste, and drag and drop | File picker and paste | File picker, share intake, and capture |
-| Review summaries, previews, citations, and contradictions | Full workflow | Full workflow | Full workflow with focused screens |
-| Edit Claims, Relationships, Folders, Leads, and Tasks | Full workflow | Full workflow | Full workflow |
-| Review Findings and Entity merges | Local host or connected managed host | Connected managed host | Local host or connected managed host |
-| Search Cases, material, and Case history | Available local and managed content | Authorized managed content and permitted cache | Available local and managed content |
-| Explore Graph, Timeline, and Map | Full workspace | Full workspace | Focused subgraphs and linked views, with equivalent selection and editing actions |
-| Chat, change models, edit instructions, and manage Custom agents and Skills | Full workflow | Full managed workflow | Full workflow |
+| Add Seed information, documents, images, and links | File picker, paste, and drag and drop | File picker, paste, and drag and drop, with native capture through a compatible runtime | Simple file selection, sharing, and capture |
+| Review summaries, previews, citations, and contradictions | Full workflow | Full workflow | Readable focused reviews |
+| Edit Claims, Relationships, Folders, Leads, and Tasks | Full workflow | Full workflow | Simple edits that pass mobile workflow validation |
+| Review Findings and Entity merges | Local host or connected managed host | Local runtime or connected managed host | Clear individual reviews only; complex merge comparison belongs on web or Electron |
+| Search Cases, material, and Case history | Available local and managed content | Available local content through the local runtime and authorized managed content | Available local and managed content |
+| Explore Graph, Timeline, and Map | Full workspace | Full workspace | Readable focused views; dense analysis and complex graph editing belong on web or Electron |
+| Chat, change models, edit instructions, and manage Custom agents and Skills | Full workflow | Full workflow | Chat, model selection, and simple settings; complex configuration requires a usable mobile design or remains on web and Electron |
 | Run CLI subscription agents | Eligible local Runner | Control an attached Runner | Control an attached Runner |
-| Run optional API agents | Eligible local or managed worker | Eligible managed worker or attached Runner | Eligible managed worker or attached Runner |
-| Execute native tools and executable Plugins | Compatible local Runner | Compatible managed worker or attached Runner | Compatible managed worker or attached Runner |
-| Watch parent agents, subagents, tool calls, and browser work | Yes | Yes | Yes |
-| Pause, stop, and review approvals | Local host or connected managed host | Connected managed host | Local host or connected managed host |
-| Generate Reports and Portable Case archives | Local host or managed host | Managed host | Local host or managed host, with large jobs handled by an eligible worker |
-| Continue research after the UI closes | Available local Runner or managed worker | Available managed worker or attached Runner | Available managed worker or attached Runner |
+| Run optional API agents | Eligible local or managed worker | Eligible local runtime, managed worker, or attached Runner | Eligible managed worker or attached Runner |
+| Execute native tools and executable Plugins | Compatible local Runner or managed worker | Compatible local runtime, managed worker, or attached Runner | Start supported workflows on an eligible host; complex tool configuration belongs on web or Electron |
+| Watch parent agents, subagents, tool calls, and browser work | Full workflow | Full workflow | Readable agent activity and supported browser previews; complex multi-panel supervision belongs on web or Electron |
+| Pause, stop, and review approvals | Local host or connected managed host | Local runtime or connected managed host | Local host or connected managed host |
+| Generate Reports and Portable Case archives | Local host or managed host | Local runtime or managed host | Simple generation, import, and export; advanced Report composition belongs on web or Electron |
+| Continue research after the UI closes | Available local Runner or managed worker | Available local runtime, managed worker, or attached Runner | Available managed worker or attached Runner |
 
-Managing an extension library is distinct from executing an extension. All clients can inspect versions, configure Custom agents and Skills, and request permitted Case grants. Only a compatible execution host runs executable packages. The library remains maintainer-managed under the approved extension decision.
+Managing an extension library is distinct from executing an extension. Web and Electron provide the complete library, Custom-agent configuration, Skill configuration, and Case-grant workflows. Mobile includes only the parts that pass mobile workflow validation. Only a compatible execution host runs executable packages. The library remains maintainer-managed under the approved extension decision.
 
 An accountless local mobile Case does not acquire remote research merely by installing the app. The UI identifies which requested actions require a Runner or managed host. Case editing, review, organization, local search, and archive portability remain useful without those services. Mobile-native model execution and arbitrary local executable tools are outside this parity commitment.
 
+## Mobile feature admission
+
+A mobile feature must complete its intended task with readable text, useful previews, suitable touch targets, clear navigation, and no dependence on a desktop pointer, keyboard shortcut, or several simultaneous panels. It must preserve the information needed to make the decision. Test the complete workflow on supported phone sizes with scalable text and assistive navigation.
+
+Adapting a feature into a focused screen is acceptable when the task stays clear. If a usable design is not available, leave the feature off mobile. Do not ship an awkward compressed desktop screen to claim parity. Tablet availability is evaluated separately and does not automatically grant phone availability.
+
+For an omitted feature, preserve any existing draft or selected object and provide an Open on web or Electron route to the same Case context when accessible. Mobile search, links, and menus must not expose dead controls. The exact mobile feature list is recorded as investigation workflows are validated, and later additions require the same usability check.
+
 ## Case navigation and accessibility
 
-Keep Case identity, active view, selected Entity, applied filters, and local or managed status visible. Carry selection and time filters when moving between Graph, Timeline, Map, inspector, search, and live work. A mobile subgraph can expand progressively without losing the complete Case graph.
+Keep Case identity, active view, selected Entity, applied filters, and local or managed status visible. Carry selection and time filters when moving between supported Graph, Timeline, Map, inspector, search, and live-work views. Mobile focused views preserve the complete underlying Case data even when an editing feature is available only on web and Electron.
 
 Provide a searchable list or relationship table as an alternative to graph and map interaction. Every visual-only gesture has a labeled control. Desktop and web support keyboard navigation, visible focus, and shortcuts that do not intercept text editing. Mobile supports screen-reader labels, scalable text, and adequate touch targets. Status uses text and shape as well as color. Respect reduced motion and let users pause animation.
 
@@ -59,7 +73,7 @@ Offline managed users can write notes, add new material, organize drafts, propos
 
 Synchronize permitted notes and material automatically on reconnection, preserving both versions of conflicts. Keep Research requests drafted offline in a ready-to-review queue. Require the user to send them after reconnection so a forgotten request cannot unexpectedly start a chargeable job. Host validation still applies to every accepted command.
 
-Show browser offline drafts as temporary local work. Browser cache is disposable, so the web client must offer draft export and explain the limits before a user relies on an offline draft. Durable offline Case downloads belong to installed apps. The web client remains useful for permitted cached reading and temporary drafts when its offline interface is available.
+Show browser-only offline drafts as temporary local work. Browser cache is disposable, so the web client must offer draft export and explain the limits before a user relies on an offline draft. Web uses a compatible local runtime for the durable offline Case downloads and local authority also available in Electron. The hosted web client can use permitted cached reading and temporary drafts while disconnected, without representing that cache as durable storage.
 
 ## Device sign-in and Runner pairing
 
@@ -91,7 +105,7 @@ Automatically transfer text and small previews, but wait for Wi-Fi before large 
 
 ## Live browser and notifications
 
-All clients can inspect live parent and child agents, tool events, safe results, created Artifacts, graph changes, and browser activity. The live research page runs in an isolated browser on the execution host. The client receives a permitted view and bounded controls. The page cannot access the application's Case database or privileged device APIs.
+Web and Electron can inspect live parent and child agents, tool events, safe results, created Artifacts, graph changes, and browser activity. Mobile exposes readable activity views and supported previews that pass its usability criteria. The live research page runs in an isolated browser on the execution host. The client receives a permitted view and bounded controls. The page cannot access the application's Case database or privileged device APIs.
 
 Private human takeover is available only through a supported secure session. If the client cannot provide that session, preserve the waiting state and open the task on a compatible client. Do not put credentials or private challenge content into a shared recording.
 
@@ -105,12 +119,16 @@ Notification delivery is advisory. Approval requests, run errors, and completion
 - A browser closes during research. Its eligible execution host continues, and reopening the Case restores the recorded agent activity.
 - A desktop closes while a local CLI run is active. The chosen close behavior keeps work running, safely pauses, or stops it, with a visible final status.
 - A revoked member reconnects with old drafts. The host rejects unauthorized changes and eligible recovery follows the existing identity policy.
-- A mobile user selects an Entity on the Timeline. Opening Graph focuses the same Entity and preserves the selected time window.
+- A mobile user follows an Entity into a supported focused view. The selection and time filter remain intact. If the requested advanced action is omitted from mobile, the user can continue it on web or Electron with the same context.
+- A web user configures a Custom agent or performs complex graph editing. The complete workflow is available as in Electron, using the connected execution host when needed.
+- A phone cannot present an Entity merge comparison clearly. The merge workflow is omitted from mobile, while the underlying records remain available for readable review.
 - A user pairs a laptop Runner from their phone. The grant names the Case and capabilities, while provider login remains on the laptop.
 - A user without a subscription imports an archive on an installed app. The independent local Case remains usable without managed synchronization.
 - A user sends a stop request with no network connection. The app displays that delivery is pending rather than claiming that the run stopped.
 
 ## Approved decisions
+
+Web and Electron have product feature parity. Mobile features are included selectively according to demonstrated usability and presentation quality. The following defaults also remain approved:
 
 1. Closing Electron during active local research offers Keep running, Pause safely, or Stop, with an optional remembered preference.
 2. Offline availability uses explicitly selected Cases, lightweight downloads first, and optional pinned originals.
