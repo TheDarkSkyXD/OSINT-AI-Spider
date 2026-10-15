@@ -12,4 +12,4 @@ The six walkthroughs cover missing-person, criminal, cyber, financial, GitHub, a
 
 Switch between Web and Electron to inspect the same workflow. Mobile mode demonstrates a proposed subset and a way to continue complex graph editing and Report composition on web. It is an experience sketch, not proof of native platform execution or human usability acceptance.
 
-The review question is whether this shared workflow represents the investigation correctly, including unresolved material and human review. The user chooses whether to approve it or request changes before the Wayfinder ticket is closed.
+The user [approved this shared workflow](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/19#issuecomment-6191360179) on October 15, 2026, including unresolved material and human review. Real client behavior and integrations still require implementation acceptance tests.

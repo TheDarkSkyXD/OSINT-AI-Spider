@@ -32,4 +32,4 @@ Evidence illustrations and research-page contents retain their original colors. 
 
 Browser verification covered all seven main screens, settings, history search, parent and subagent activity, six complete workflow paths, and a narrow viewport. Sampled rendered text had no contrast failures outside original source content and genuinely disabled controls. This sampling does not establish full accessibility conformance. Focus styles were inspected; the embedded verification browser was not window-focused, so a visible keyboard-focus review remains necessary in a focused browser.
 
-The investigation-workflow decision remains open for the user's verdict.
+The user approved the investigation-workflow design on October 15, 2026. The [recorded decision](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/19#issuecomment-6191360179) does not replace implementation acceptance tests.

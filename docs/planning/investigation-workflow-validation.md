@@ -1,8 +1,8 @@
 # Investigation workflow validation
 
-Status: planning prototype exercised October 15, 2026. Awaiting the user's workflow verdict.
+Status: planning prototype exercised and approved by the user October 15, 2026.
 
-The prototype now uses the requested grayscale dark theme. After the styling update, all six 13-step paths completed again in the browser. The theme update does not resolve the outstanding workflow verdict.
+The prototype uses the requested grayscale dark theme. After the styling update, all six 13-step paths completed again in the browser. The user approved the workflow design after reviewing the prototype. This approval does not establish production readiness.
 
 Decision ticket: [Validate end-to-end investigation workflows across case types](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/19).
 
@@ -90,8 +90,8 @@ The graph handoff retains the Case, two Artifacts, two Claims, and the current g
 - Source capture limits must stay visible in previews, summaries, and later Reports. The fixtures exercise excerpt limits without claiming real capture or digest verification.
 - Mobile availability is determined per complete task. Readable review and field intake are candidates. Dense editing can hand off to web or Electron without losing the Case context.
 
-## Still awaiting validation
+## Remaining implementation validation
 
-The user must decide whether the shared workflow fits the intended investigative experience. Real connector selection remains with [Choose the initial bundled and verified connector catalog](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/22). Paid limits remain with [Define subscription plans, entitlements, and metered usage](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/21).
+The [user's approval](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/19#issuecomment-6191360179) resolves the shared workflow design. Real connector selection remains with [Choose the initial bundled and verified connector catalog](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/22). Paid limits remain with [Define subscription plans, entitlements, and metered usage](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/21).
 
 Implementation must later verify actual collection and normalization, provider integration and handovers, durable history, version-specific citations, original-content integrity, authorization, synchronization, desktop and browser parity, mobile usability, accessibility, performance, and recovery. The prototype does not replace those checks.
