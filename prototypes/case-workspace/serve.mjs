@@ -25,4 +25,3 @@ createServer(async (request, response) => {
 }).listen(4173, "127.0.0.1", () => {
   console.log("Case workspace prototype: http://127.0.0.1:4173/?variant=A");
 });
-

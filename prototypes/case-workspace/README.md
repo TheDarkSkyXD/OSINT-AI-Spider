@@ -19,4 +19,3 @@ Selected direction: `C`, keeping the narrative-first briefing room and replacing
 All three variants use the October 15 grayscale dark theme. Evidence illustrations keep their original colors. The original design is preserved on the earlier prototype branch.
 
 The data is fictional and state stays in memory. This is not production code.
-

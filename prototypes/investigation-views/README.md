@@ -19,4 +19,3 @@ Selected direction: `A`, the graph-first Network canvas. Its synchronized Timeli
 All three variants use the October 15 grayscale dark theme, including the Timeline and Map. Source previews keep their original colors. The original design is preserved on the earlier prototype branch.
 
 All data is fictional. State stays in memory, controls are read-only stubs, and no remote resources load. This is not production code.
-

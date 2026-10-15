@@ -27,4 +27,3 @@ createServer(async (request, response) => {
 }).listen(4174, "127.0.0.1", () => {
   console.log("Investigation views prototype: http://127.0.0.1:4174/?variant=A");
 });
-
