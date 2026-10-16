@@ -1,6 +1,6 @@
 # Initial connector catalog
 
-Status: draft for user review. Catalog boundaries are approved; individual entries remain proposed.
+Status: draft for user review. Catalog boundaries, the target adapter set, the search-provider path, and the initial bug-bounty scope are approved. Interoperability, admission behavior, and coverage presentation remain open.
 
 Decision: [Choose the initial bundled and verified connector catalog](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/22).
 
@@ -13,6 +13,14 @@ Aim for 25 to 40 tested Connectors across the approved capability groups. The pu
 Bundle small maintained offline processors, public sources without credentials, and stable public API adapters. Credentialed services, large runtimes, external tools, and components needing additional license review are optional Verified candidates. Users supply credentials and pay source providers directly.
 
 Case templates recommend relevant packs. Each Research plan selects its inputs, sources, scope, and budget. Bug bounty support includes program scope intake, authorized asset research, evidence organization, and report preparation. Target-contacting tests use the separate active-cyber pack.
+
+## Approved catalog selections
+
+The 30 research or import candidates and three separate active-cyber candidates below form the initial target catalog. Each entry is admitted individually after its access, packaging, security, provenance, and integration checks pass. A failed or delayed candidate does not become available merely to preserve the target count.
+
+Brave is the first search-provider path to evaluate. Admission requires an applicable plan and agreement that permits the intended retention, citation, sharing, export, and AI-processing workflow. The search interface remains provider-replaceable, and this decision does not admit Brave before those terms and the integration have been verified.
+
+Initial bug-bounty scope includes program imports, human-reviewed scope normalization, passive asset research, evidence organization, reproduction notes, report drafts, and optional scoped execution through httpx, reviewed Nuclei templates, and ZAP. Target-contacting work remains disabled by default and requires the approved active-cyber controls.
 
 ## How to read the candidate matrix
 
@@ -81,9 +89,9 @@ Duplicate suggestions are advisory. The application cannot know all private prog
 
 ## Search and deferred entries
 
-The default search provider remains unresolved. Search results must have terms compatible with the product's retention and citation workflow. A source whose terms prohibit that workflow cannot be admitted merely because an API key is available.
+Brave is the approved first search-provider path, but it remains a conditional candidate rather than an admitted adapter. Search results must have terms compatible with the product's retention and citation workflow. A source whose terms prohibit that workflow cannot be admitted merely because an API key is available.
 
-Brave offers plans with storage rights that can override its general restrictions. It is the first conditional search candidate, pending verification of the applicable retention, sharing, export, and AI-processing terms. Exa and Tavily are alternatives with unresolved agreement requirements. No provider is selected unconditionally by this draft.
+Brave offers plans with storage rights that can override its general restrictions. The project must verify the applicable retention, sharing, export, and AI-processing terms before admission. Exa and Tavily remain replaceable alternatives with unresolved agreement requirements. The catalog does not promise an unconditional default search provider before qualification succeeds.
 
 Maigret is an alternative to evaluate after the initial username adapter. Broad SpiderFoot module execution is deferred until each selected module has its own policy and provenance mapping. Unreviewed module packs do not become approved through a wrapper.
 
@@ -97,4 +105,4 @@ CSV and JSON exports expose version references and provenance. GraphML and GEXF 
 
 The proposed list contains 30 research or import candidates and three separate active-cyber candidates. The interface must report actual admitted versions, runtime availability, source access, and current health. These candidate counts are not a claim of implemented or healthy integrations.
 
-The final catalog review must settle the search provider, exact launch subset, optional active tools, interoperability scope, and behavior when a source is unavailable.
+The final catalog review must settle interoperability scope, adapter admission and health behavior, and truthful coverage and fallback presentation.
