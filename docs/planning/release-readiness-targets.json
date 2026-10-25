@@ -1,0 +1,45 @@
+{
+  "status": "draft",
+  "decisionIssue": 27,
+  "measured": false,
+  "decisions": ["platforms", "release-and-migrations", "performance", "reliability-and-recovery", "observability", "incident-readiness", "hosting-boundary"],
+  "platforms": {
+    "desktop": ["Windows 11 serviced release, x64", "Ubuntu 24.04 LTS, x64", "Ubuntu 26.04 LTS, x64"],
+    "desktopWeb": ["Chrome current and previous stable", "Edge current and previous stable", "Firefox current and previous stable", "Safari current and previous stable for managed web"],
+    "mobile": ["Android 12+ on qualified devices", "iOS 18+ on qualified devices"],
+    "deferred": ["Windows ARM64", "Linux ARM64", "macOS desktop/local runtime", "other Linux distributions", "direct hosted-page-to-loopback pairing as a required launch path"]
+  },
+  "release": {
+    "normalArtifactHoldMinutes": 10080,
+    "stagesPercent": [1, 10, 100],
+    "limitedStageObservationHours": 24,
+    "sameArtifactPromotion": true,
+    "safeRestartRequired": true,
+    "linuxUpdatePath": "signed distribution packages/repository",
+    "mobileUpdatePath": "signed native store releases; executable OTA deferred",
+    "preMigrationVerifiedSnapshot": true,
+    "managedContractRemovalMinimumDays": 30,
+    "previousProtocolSupportMonths": 12
+  },
+  "fixtures": {
+    "desktop": {"ramGiB": 8, "logicalCores": 4, "storage": "SSD", "entities": 10000, "relationships": 50000, "observations": 100000, "artifacts": 10000, "artifactGiB": 10},
+    "mobile": {"ramGiB": 4, "entities": 2000, "relationships": 5000, "observations": 20000, "artifacts": 1000, "artifactGiB": 1},
+    "managed": {"concurrentSessions":100,"coreOperationsPerSecond":20,"readPercent":80,"writePercent":20,"activeReferenceCases":10,"steadyMinutes":30,"burstOperationsPerSecond":40,"burstMinutes":2,"apiReplicas":2,"apiAggregateVcpu":4,"apiAggregateRamGiB":8,"databaseVcpu":2,"databaseRamGiB":8,"syntheticResearchJobs":5},
+    "graphProjection": {"entities": 1000, "relationships": 3000}
+  },
+  "performance": [
+    {"id":"desktop-start","quantile":95,"maximum":5000,"unit":"ms","fixture":"desktop","scope":"Cold start to usable Case library; excludes human unlock input"},
+    {"id":"desktop-case-open","quantile":95,"maximum":3000,"unit":"ms","fixture":"desktop","scope":"Unlocked Case to usable first content with coverage indicated"},
+    {"id":"desktop-search","quantile":95,"maximum":1000,"unit":"ms","fixture":"desktop","scope":"Warm Case identifier/full-text query to first 50 results"},
+    {"id":"desktop-save","quantile":95,"maximum":500,"unit":"ms","fixture":"desktop","scope":"Small local mutation to durable host acknowledgement; excludes binary transfer"},
+    {"id":"graph-view","quantile":95,"maximum":2000,"unit":"ms","fixture":"graphProjection","scope":"Prepared bounded graph projection to usable view"},
+    {"id":"managed-api","quantile":95,"maximum":750,"unit":"ms","fixture":"managed","scope":"Core small command/query server processing at declared steady/burst load; excludes WAN, large transfers, and external research execution"},
+    {"id":"mobile-case-open","quantile":95,"maximum":3000,"unit":"ms","fixture":"mobile","scope":"Unlocked downloaded local Case structure to usable focused view"},
+    {"id":"mobile-intake","quantile":95,"maximum":3000,"unit":"ms","fixture":"mobile","scope":"Selected <=10 MiB file to durable local pending/captured intake; excludes camera interaction and network upload"}
+  ],
+  "resources": {"desktopIdleMiBMaximum":1024,"mobileIdleMiBMaximum":350,"regressionPercentMaximum":10,"benchmarkRepetitionsMinimum":30},
+  "reliability": {"monthlyCoreAvailabilityPercent":99.9,"measurementWindowDays":30,"disasterRpoMinutes":15,"disasterRtoHours":8,"recoveryRetentionDays":30,"monthlyRestoreExercisesMinimum":1,"preLaunchObservationDays":30,"coreSyntheticProbeIntervalSeconds":60},
+  "privacy": {"localDiagnosticDays":7,"managedOperationalLogDays":14,"managedTraceDays":7,"managedSecurityLogDays":90,"clientUploadsDefault":"off","casePayloadsInTelemetry":false},
+  "incidents": {"p0AckMinutes":15,"publicUpdateMinutes":60,"postIncidentReviewBusinessDays":5,"hostStopAckP95Ms":2000,"emergencyRevokeP95Ms":2000,"processTerminationP95Ms":5000,"disconnectedLeaseMaximumSeconds":60,"productionCoverage":"24/7 pager coverage with backup; must be staffed before paid launch"},
+  "hosting": {"launchBoundary":"United States","primaryRegions":1,"separateDrRegions":1,"separateBackupAccountRequired":true,"automaticCrossBoundaryFailover":false,"externalProviderDisclosureRequired":true}
+}
