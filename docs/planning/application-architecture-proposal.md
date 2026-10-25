@@ -1,6 +1,6 @@
 # Application architecture and build toolchain
 
-Status: draft for user review. Five architecture choices remain open. This document proposes a build target and package boundaries; it does not create the application or qualify its dependencies.
+Status: approved planning decision. On October 25, 2026, the user selected all five recommendations for the core stack, mobile framework, browser-local entry, repository split, and build/enforcement approach. Implementation and platform qualification remain ahead.
 
 Decision: [Choose application architecture and build toolchain](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/26).
 
@@ -18,15 +18,15 @@ The approved storage decision fixes encrypted local SQLCipher databases with sep
 
 Three materially different core designs were considered:
 
-1. Shared TypeScript Domain, Node application hosts, and a narrow Rust platform executable. React clients reuse contracts and presentation logic. Native details stay behind ports. This concentrates product rules in one language while adding a small native build pipeline. It is the recommended candidate.
+1. Shared TypeScript Domain, Node application hosts, and a narrow Rust platform executable. React clients reuse contracts and presentation logic. Native details stay behind ports. This concentrates product rules in one language while adding a small native build pipeline. It is the selected architecture.
 2. Rust Domain and application host, with React clients and generated bridge contracts. This concentrates native ownership and could share a qualified core with mobile. It adds native/WASM integration wherever executable rules must run in a JavaScript client. No measured performance or security advantage has been established for this product.
 3. Python/FastAPI Domain and host, with React clients and bridged specialist tools. It aligns with many OSINT libraries, but adds Python application distribution and a separate path for accountless mobile authority. Python remains useful for isolated existing tools without owning the whole product.
 
 These are design sketches, not benchmarked prototypes. Framework popularity and a working hello-world do not prove the required encryption, process isolation, recovery, or mobile behavior.
 
-## Q1. Core architecture and stack
+## Approved core architecture and stack
 
-Recommendation: use React and TypeScript with Vite for the web application and Electron renderer, a shared framework-independent TypeScript Domain, Node/Fastify application hosts, and a narrow Rust platform executable for native integration.
+Use React and TypeScript with Vite for the web application and Electron renderer, a shared framework-independent TypeScript Domain, Node/Fastify application hosts, and a narrow Rust platform executable for native integration.
 
 ### Client and host separation
 
@@ -34,7 +34,7 @@ Build the web application as a client of application-owned commands and queries.
 
 Electron uses sandboxed renderers, context isolation, disabled Node integration, restricted navigation, a restrictive content-security policy, and IPC sender validation. Preload exposes separate allowed methods, never generic IPC forwarding. Package reviewed local content under a qualified application protocol; do not load untrusted evidence as privileged application content.
 
-Vite is proposed because the investigation workspace needs a reusable client bundle while the application host owns durable work. A Next.js application with an explicit local server is viable, but adds a framework server to the desktop/local-browser path. Static Next.js export cannot preserve server-dependent features by itself. Public marketing pages may use a different framework later without changing Case authority.
+Vite is selected because the investigation workspace needs a reusable client bundle while the application host owns durable work. A Next.js application with an explicit local server is viable, but adds a framework server to the desktop/local-browser path. Static Next.js export cannot preserve server-dependent features by itself. Public marketing pages may use a different framework later without changing Case authority.
 
 The TypeScript Domain owns Case invariants, truth and review states, permissions, plan and run transitions, policy decisions, and accepted mutations. It imports application-owned contracts and capability ports. It does not import React, Fastify, Electron, Expo, Node APIs, SQL drivers, or provider SDKs. Mobile can run these pure rules for its own local Cases. Managed authorization always runs on the managed host, even when a client has the same code.
 
@@ -64,9 +64,9 @@ The public Runner is an execution role, distinct from a Case host. It accepts sh
 
 Managed API instances form one logical Case authority through the approved persistence and fencing rules. Private workers return Case-output batches through that authority. A worker does not get unrestricted Case database writes merely because it can claim a job. Begin with a durable PostgreSQL-backed queue/outbox and scoped job leases; add another queue service only if measured needs justify it.
 
-## Q2. Mobile framework
+## Approved mobile framework
 
-Recommendation: use Expo React Native with project development and release builds for iOS and Android. Share contracts, pure Domain rules, view selectors, design tokens, and conformance fixtures. Build focused native screens rather than embedding the entire desktop workspace in a WebView.
+Use Expo React Native with project development and release builds for iOS and Android. Share contracts, pure Domain rules, view selectors, design tokens, and conformance fixtures. Build focused native screens rather than embedding the entire desktop workspace in a WebView.
 
 Mobile-local composition binds the shared Domain to qualified native SQLCipher, encrypted Artifact storage, secure key storage, and OS file/capture adapters. Managed composition sends authoritative commands to the service and treats downloaded material as a cache under the existing offline lease. A replica never becomes a local authority accidentally.
 
@@ -76,9 +76,9 @@ Windows/Linux can support much of JavaScript and Android development. iOS local 
 
 Flutter is a viable alternative for a separate mobile UI, with generated contracts and a platform bridge to the chosen local rules. Fully native Swift/Kotlin clients are another option. Both increase the number of UI stacks and the work required to keep local Case semantics consistent. The recommendation is based on sharing and maintenance, not a claim that React Native is always faster or more secure.
 
-## Q3. Browser access to local Cases
+## Approved browser access to local Cases
 
-Recommendation: install the local runtime and serve the complete web application and its API from the same loopback origin on that computer. This is the primary free browser-local entry point. Hosted managed web remains a separate paid entry point using the same application features.
+Install the local runtime and serve the complete web application and its API from the same loopback origin on that computer. This is the primary free browser-local entry point. Hosted managed web remains a separate paid entry point using the same application features.
 
 The runtime binds loopback only by default and serves only its packaged reviewed assets. Bootstrap and unlock establish a device-local session with approved origin, Host validation, CSRF protection, bounded request handling, and authenticated live channels. Reject DNS rebinding and unapproved origins. Loopback reachability is not authorization. Do not place durable credentials in URLs or expose a LAN listener by default.
 
@@ -90,13 +90,13 @@ A hosted HTTPS page talking directly to loopback is a separately qualified optio
 
 This local browser entry preserves the approved web/Electron parity. It does not provide a public self-hosted managed service, free cross-device sync, or automatic exposure of a local Case to another device. Portable archives remain the accountless transfer mechanism.
 
-## Q4. Repository and package ownership
+## Approved repository and package ownership
 
-Recommendation: keep one public npm-workspace repository for the open-source clients, local host, Runner, SDK, contracts, and shared Domain. Keep managed API, workers, managed identity, billing, synchronization implementation, and managed storage adapters in a separate private repository.
+Keep one public npm-workspace repository for the open-source clients, local host, Runner, SDK, contracts, and shared Domain. Keep managed API, workers, managed identity, billing, synchronization implementation, and managed storage adapters in a separate private repository.
 
 Private code consumes reviewed immutable versions of the public packages through a controlled build dependency. The public product builds without checking out the private repository, obtaining a paid account, or using private registry credentials. Public clients may contain managed-service protocol clients; they do not contain the private service implementation or its secrets. Compatible public-package licensing must be settled in the existing governance decision before distribution.
 
-The proposed package map is recorded in [the architecture model](application-architecture-model.json). These are responsibilities to scaffold during implementation, not existing source folders:
+The approved package map is recorded in [the architecture model](application-architecture-model.json). These are responsibilities to scaffold during implementation, not existing source folders:
 
 - `apps/web` builds the browser entry around `packages/ui-web`.
 - `apps/desktop` separates renderer, preload, and main-process composition. It supervises or attaches to the local host and exposes restricted native channels.
@@ -114,9 +114,9 @@ The proposed package map is recorded in [the architecture model](application-arc
 
 The graph/map/timeline renderer, editor, and file-preview libraries stay replaceable behind UI-owned interfaces over stable Case projections. Select and qualify the concrete libraries against the existing interface and performance requirements during implementation. Choosing a graph renderer does not choose a new graph database or change the meaning of Relationships.
 
-## Q5. Build system and boundary enforcement
+## Approved build system and boundary enforcement
 
-Recommendation: begin with npm workspaces, explicit root build/check scripts, TypeScript project references, Cargo for the native executable, Vite for the shared web bundle, Electron Forge for desktop packaging, and Expo development/release builds for mobile. Add a larger task orchestrator only when build measurements justify it.
+Begin with npm workspaces, explicit root build/check scripts, TypeScript project references, Cargo for the native executable, Vite for the shared web bundle, Electron Forge for desktop packaging, and Expo development/release builds for mobile. Add a larger task orchestrator only when build measurements justify it.
 
 Build the Vite assets and host/native binaries explicitly before Forge packages them. Forge's Vite plugin is currently marked experimental, so the initial plan does not depend on that plugin or its template. Forge remains the packaging layer over reviewed prebuilt assets and explicit lifecycle hooks. Qualify packaged paths, application-protocol loading, signing, and per-platform makers. [Forge build lifecycle](https://www.electronforge.io/core-concepts/build-lifecycle), [Vite plugin status](https://www.electronforge.io/config/plugins/vite)
 
@@ -144,7 +144,7 @@ The reproducible model check is:
 node docs/planning/check-application-architecture.mjs
 ```
 
-It checks declared package references, layer directions, public/private separation, cycles, forbidden example imports, and freshness of the generated [route visual](application-architecture.html). Run the same command with `--render` after editing its model or template. It validates a proposed dependency model, not real source imports. Platform packaging, encryption, mobile behavior, browser access, runtime sandboxing, and production performance remain unproven.
+It checks declared package references, layer directions, public/private separation, cycles, forbidden example imports, and freshness of the generated [route visual](application-architecture.html). Run the same command with `--render` after editing its model or template. It validates the declared dependency model, not real source imports. Platform packaging, encryption, mobile behavior, browser access, runtime sandboxing, and production performance remain unproven.
 
 ## First implementation proofs
 
@@ -160,6 +160,6 @@ Implementation planning should begin with verifiable end-to-end paths rather tha
 
 These are acceptance proofs for future implementation, not tests claimed to pass today. The [operational-readiness decision](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/27) sets numerical budgets, operating-system/browser support baselines, update/rollback/migration gates, and recovery targets. The [governance and release decision](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/29) chooses licensing and release stages.
 
-## Pending decisions
+## Decision boundary
 
-The five choices are the core stack, mobile framework, primary browser-local route, repository split, and initial build/enforcement approach. The user may approve the recommended set or change individual choices. A change may require revising dependent parts of this sketch before closure. This ticket remains open until the user explicitly selects the direction.
+All five choices are approved. Architecture decision questions remaining: 0. This resolves the planning ticket. It does not claim that the application, private backend, package boundaries, encrypted storage, or sandbox controls are implemented or qualified. Numerical operating targets, release gates, and governance remain with their existing decision tickets.

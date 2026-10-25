@@ -1,5 +1,5 @@
 {
-  "status": "draft",
+  "status": "approved",
   "decisionIssue": 26,
   "decisions": ["core-stack", "mobile-stack", "local-browser-route", "repository-split", "build-and-boundaries"],
   "modules": [

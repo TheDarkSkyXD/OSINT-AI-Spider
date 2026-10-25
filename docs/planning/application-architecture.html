@@ -30,7 +30,7 @@
 <body>
 <main id="architecture-routes">
   <h2>Case authority by entry point</h2>
-  <p class="draft">Proposed architecture. Select a route. No runtime compatibility claimed.</p>
+  <p class="draft">Approved architecture. Select a route. Runtime qualification remains pending.</p>
   <div class="choices" role="group" aria-label="Application entry point"></div>
   <section aria-live="polite" aria-atomic="true">
     <ol class="flow" aria-label="Runtime call path"></ol>
@@ -73,7 +73,7 @@
     if (document.documentElement.scrollWidth > innerWidth + 1) throw new Error('Architecture routes overflow horizontally');
   }
   requestAnimationFrame(checkLayout);
-  console.info('Verified ' + routes.length + ' selectable architecture routes. These are proposed runtime calls, not source imports.');
+  console.info('Verified ' + routes.length + ' selectable architecture routes. These are planned runtime calls, not source imports.');
 </script>
 </body>
 </html>

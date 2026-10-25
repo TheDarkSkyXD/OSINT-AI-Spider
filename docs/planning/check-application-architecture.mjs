@@ -60,11 +60,11 @@ for (const [from, to, reason] of negativeCases) {
   invalid.modules.find(item => item.id === from).imports.push(to);
   assert.throws(() => verify(invalid), undefined, `Checker failed to reject ${reason}`);
 }
-assert.equal(model.decisions.length, 5, 'Expected five pending architecture choices');
+assert.equal(model.decisions.length, 5, 'Expected five architecture choices');
 assert.equal(new Set(model.routes.map(route => route.id)).size, 4, 'Expected four distinct runtime routes');
 assert.equal(modules.get('domain').visibility, 'public');
 console.log(`Architecture model: ${modules.size} modules, ${model.routes.length} runtime routes, ${negativeCases.length} forbidden examples rejected.`);
-console.log('This checks the proposed dependency model. It does not inspect source imports or prove runtime isolation, packaging, or platform compatibility.');
+console.log('This checks the declared dependency model. It does not inspect source imports or prove runtime isolation, packaging, or platform compatibility.');
 
 const template = readFileSync(new URL('./application-architecture-view.template.html', import.meta.url), 'utf8');
 const html = template.replace('__ARCHITECTURE_ROUTES__', JSON.stringify(model.routes).replaceAll('<', '\\u003c'));
