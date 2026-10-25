@@ -1,0 +1,111 @@
+{
+  "status": "draft",
+  "decisionIssue": 28,
+  "implementationVerified": false,
+  "decisions": ["preset-set", "starter-limits", "progressive-intake", "private-customization", "guided-review"],
+  "definition": "A versioned configuration preset for Case intake, suggested organization, relevant capabilities, and review guidance. It uses the universal Case model and grants no authority.",
+  "common": {
+    "caseModel": "universal",
+    "initialCaseStatus": "draft",
+    "defaultAutonomyMode": "suggest_only",
+    "autoGrantConnectors": false,
+    "autoStartResearch": false,
+    "autoStartSchedules": false,
+    "activeCyberEnabled": false,
+    "externalEngagementEnabled": false,
+    "autoAcceptFindings": false,
+    "unknownIntakeValuesAllowed": true,
+    "suggestedSourceClasses": ["public", "user-provided"],
+    "authorityCheck": "current_authoritative_host_policy",
+    "unapprovedNewChargesUsdMaximum": 0,
+    "aiBudget": "explicit_existing_provider_and_run_policy",
+    "templateUpgrade": "explicit_reviewed_delta",
+    "customization": "private_configuration_only",
+    "guidance": "optional_checklists",
+    "starterPlan": {"elapsedMinutes":10,"connectorActions":20,"networkRequests":100,"storedOutputMiB":100,"outputArtifacts":50,"observationRecords":500,"pivotDepth":1,"parallelBranches":3}
+  },
+  "mobile": {
+    "focusedPaths": ["draft-intake", "notes-and-selected-media", "citation-and-source-inspection", "readable-review", "run-status-and-controls", "reviewed-report-reading", "context-preserving-handoff"],
+    "desktopHandoff": ["complex-graph-editing", "ambiguous-entity-merge", "advanced-report-composition", "complex-active-scope-review"]
+  },
+  "templates": [
+    {
+      "id":"general-research","name":"General research","version":"1.0.0",
+      "intake":["objective and questions","Seed information and its origin","time/geographic/language relevance","included and excluded subjects","source and disclosure constraints"],
+      "sensitivityDefaults":["review_supplied_material"],
+      "suggestedPacks":["web-news","documents-media","general-organizations"],
+      "candidateConnectors":["C01","C03","C04","C05","C06","C24"],
+      "optionalActiveCandidates":[],
+      "suggestedFolders":["Sources","Working notes","Reviewed material"],
+      "reviewFocus":["answer each question with cited support","identify copied sources and contradictions","state unresolved questions and next steps"],
+      "scenario":{"id":"general-copied-source","seed":"A fictional organization and two articles","awkward":"The second article copies the first and another record contradicts the date","expected":["preserve-source-lineage","avoid-independent-corroboration-claim","flag-contradiction","retain-prior-versions","human-report-review"]}
+    },
+    {
+      "id":"missing-person","name":"Missing person","version":"1.0.0",
+      "intake":["objective and researcher relationship/authority basis","known identifiers, aliases and supplied photographs","last-known event with time zone and uncertainty","age band/vulnerability and consent constraints, including unknown","included and excluded locations/sources","approved contact or escalation reference, if any"],
+      "sensitivityDefaults":["sensitive_person","unknown_age_is_not_adult"],
+      "suggestedPacks":["identity","web-news","documents-media"],
+      "candidateConnectors":["C01","C03","C04","C05","C06","C07","C09","C10","C11","C12"],
+      "optionalActiveCandidates":[],
+      "suggestedFolders":["Timeline material","Candidate identities","Contact information to review"],
+      "reviewFocus":["separate reported last-seen facts from collection time","review each candidate identity against its sources","retain contradictory sightings and unresolved uncertainty","record any human resolution without promising current location"],
+      "scenario":{"id":"missing-similar-profile","seed":"A fictional adult-or-unknown-age person with a supplied last-seen note","awkward":"A similar username and old image metadata suggest two different people","expected":["preserve-source-lineage","keep-candidate-identities-separate","do-not-infer-current-location","flag-contradiction","no-autonomous-outreach","human-report-review"]}
+    },
+    {
+      "id":"criminal-investigation","name":"Criminal investigation","version":"1.0.0",
+      "intake":["research objective and alleged event","researcher role, jurisdiction and declared authority basis","event time range and location with uncertainty","roles asserted by supplied records and their origins","sensitive-person, witness/victim/minor handling constraints","permitted records and excluded sources"],
+      "sensitivityDefaults":["sensitive_person","review_role_assertions"],
+      "suggestedPacks":["documents-media","web-news","public-records-finance","identity"],
+      "candidateConnectors":["C01","C03","C04","C05","C06","C07","C09","C10","C11","C12","C16","C17","C18"],
+      "optionalActiveCandidates":[],
+      "suggestedFolders":["Statements and records","Timeline material","Corroboration and contradictions"],
+      "reviewFocus":["preserve allegations as attributed assertions","review supporting and conflicting material equally","trace event and collection times independently","record human conclusions and outstanding limitations without a guilt score"],
+      "scenario":{"id":"criminal-conflicting-statement","seed":"Two fictional statements and a supplied dated record","awkward":"The dated record conflicts with the first allegation and a person has a similar name","expected":["preserve-source-lineage","keep-candidate-identities-separate","retain-conflicting-material","no-guilt-conclusion","retain-prior-versions","human-report-review"]}
+    },
+    {
+      "id":"cyber-investigation","name":"Cyber investigation","version":"1.0.0",
+      "intake":["objective and technical identifiers","incident/observation window and origin","asset ownership or declared authorization context","permitted third-party lookups and data disclosure","active methods and targets only for a separate proposed plan"],
+      "sensitivityDefaults":["review_credentials_and_private_infrastructure"],
+      "suggestedPacks":["infrastructure","cyber-threat-intelligence","github-code","documents-media"],
+      "candidateConnectors":["C04","C05","C06","C13","C14","C15","C21","C22","C23","C25","C29","C30"],
+      "optionalActiveCandidates":["C31","C32","C33"],
+      "suggestedFolders":["Indicators","Provider observations","Assessment notes"],
+      "reviewFocus":["distinguish historical provider observations from current measurements","keep technical indicators separate from person attribution","label missing coverage and unresolved hypotheses","review any target-contacting plan separately"],
+      "scenario":{"id":"cyber-stale-provider","seed":"A synthetic domain and IP observation","awkward":"An old provider result reports an open service while another provider is unavailable","expected":["preserve-source-lineage","show-observation-age","unavailable-is-not-no-results","no-implicit-target-probe","human-report-review"]}
+    },
+    {
+      "id":"financial-investigation","name":"Financial investigation","version":"1.0.0",
+      "intake":["objective and relevant period","organization names and official identifiers","chain/network, address or transaction references where relevant","currency/units and time precision","declared access/handling rights for supplied records","included and excluded subjects"],
+      "sensitivityDefaults":["sensitive_financial_material","review_person_attribution"],
+      "suggestedPacks":["public-records-finance","financial-identifiers","documents-media","general-organizations"],
+      "candidateConnectors":["C05","C06","C16","C17","C18","C19","C20","C24"],
+      "optionalActiveCandidates":[],
+      "suggestedFolders":["Organizations","Transactions","Attribution review"],
+      "reviewFocus":["preserve chain/currency/identifier distinctions","review company-name and person matches separately","attribute provider clustering labels to the provider","record uncertainty without a criminal-intent inference"],
+      "scenario":{"id":"financial-ambiguous-attribution","seed":"Two fictional similarly named companies and a synthetic transaction","awkward":"A provider labels an address cluster without evidence of a named person's ownership","expected":["preserve-source-lineage","keep-candidate-identities-separate","retain-chain-and-currency","no-ownership-or-intent-shortcut","human-report-review"]}
+    },
+    {
+      "id":"github-code-research","name":"GitHub and code research","version":"1.0.0",
+      "intake":["research objective and repository/account identifiers","public or explicitly authorized private access","selected revision, branch or collection-time reference","paths, organizations and time ranges in scope","whether architecture, provenance, dependencies or security is being studied"],
+      "sensitivityDefaults":["review_private_code_and_exposed_secrets"],
+      "suggestedPacks":["github-code","documents-media","web-news"],
+      "candidateConnectors":["C01","C04","C05","C06","C15"],
+      "optionalActiveCandidates":[],
+      "suggestedFolders":["Repositories and revisions","Code and dependencies","Review notes"],
+      "reviewFocus":["pin collected source references to a revision","separate forks/copies from independent origin evidence","keep code assertions distinct from deployment behavior","review sensitive snippets before export and keep external posting separate"],
+      "scenario":{"id":"github-moving-branch","seed":"A fictional repository at commit A and a fork","awkward":"The branch advances to commit B and the fork repeats the same code","expected":["preserve-source-lineage","pin-revision-citations","avoid-independent-corroboration-claim","no-secret-use-or-auto-posting","human-report-review"]}
+    },
+    {
+      "id":"bug-bounty","name":"Bug bounty","version":"1.0.0",
+      "intake":["program/platform reference and supplied or accessible brief","versioned rules/scope Artifact and capture time","included assets, exclusions and wildcard interpretation","permitted methods, time windows and traffic limits","third-party restrictions and approved account context","objective, report destination and evidence handling constraints"],
+      "sensitivityDefaults":["sensitive_program_and_reproduction_material"],
+      "suggestedPacks":["bug-bounty","infrastructure","github-code","documents-media"],
+      "candidateConnectors":["C05","C06","C13","C14","C15","C25","C26","C27","C28"],
+      "optionalActiveCandidates":["C31","C32","C33"],
+      "suggestedFolders":["Program and scope","Assets and observations","Reproduction and report drafts"],
+      "reviewFocus":["review scope and exclusions before any target-contacting plan","preserve tool/template/request/response versions","separate scanner assertions from accepted Findings","review reproduction, impact and report scope","keep submission as separately approved engagement"],
+      "scenario":{"id":"bounty-scope-change","seed":"A fictional program brief, one authorized synthetic asset and reviewed test proposal","awkward":"The program scope changes and a redirect points to an excluded third party","expected":["preserve-source-lineage","no-implicit-target-probe","scope-change-stops-affected-work","redirect-stays-in-scope","no-auto-submission-or-reward-promise","human-report-review"]}
+    }
+  ],
+  "sharedAcceptance": ["accountless-draft-intake", "current-authority-before-dispatch", "no-installation-grants", "visible-source-coverage", "shared-parent-budget", "versioned-provenance", "human-findings-and-reports", "contradictions-retain-history", "offline-intake-not-shared-until-accepted", "mobile-handoff-keeps-context", "template-update-preserves-case", "no-automatic-case-closure"]
+}
