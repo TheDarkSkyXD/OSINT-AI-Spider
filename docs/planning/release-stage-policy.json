@@ -1,5 +1,5 @@
 {
-  "status": "draft",
+  "status": "approved",
   "decisionIssue": 29,
   "implementationVerified": false,
   "decisions": ["public-license", "contributions", "authority", "security-reporting", "support", "release-stages"],

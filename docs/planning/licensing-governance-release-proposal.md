@@ -1,6 +1,6 @@
 # Licensing, governance, and release stages
 
-Status: draft for user review. Six choices remain open. This document proposes policy and future acceptance gates. It changes no license, repository setting, staffing assignment, release, or service commitment.
+Status: approved by the user on 2026-10-25 through acceptance of all six recommended choices. Zero questions remain for this decision. This document records policy and future acceptance gates. Approval changes no license file, repository setting, staffing assignment, release, or service commitment.
 
 Decision: [Define licensing, governance, and release stages](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/29).
 
@@ -16,7 +16,7 @@ The [operational decision](release-operational-readiness-proposal.md) already fi
 
 ## Q1. Public licensing and rights review
 
-Recommendation: use Apache-2.0 for new project-owned original public code and accompanying project documentation after a file-level ownership and compatibility review. Keep the managed implementation private under separately reviewed service and employment/contribution terms. The express contributor patent terms make Apache-2.0 a useful permissive baseline for reusable public packages.
+Approved: use Apache-2.0 for new project-owned original public code and accompanying project documentation after a file-level ownership and compatibility review. Keep the managed implementation private under separately reviewed service and employment/contribution terms. The express contributor patent terms make Apache-2.0 a useful permissive baseline for reusable public packages.
 
 The current root LICENSE is the Unlicense. Do not replace it as a side effect of accepting a planning proposal. Implementation must inventory existing files and contributions, preserve earlier grants, identify which owners can license which material, and publish an accurate file/package license map before distribution. Previously distributed material does not lose its original permissions. Preserve third-party licenses, notices, required source offers, and attribution independently of the project license. Ambiguous ownership blocks the affected material, not an assertion that the project owns it.
 
@@ -30,7 +30,7 @@ Alternative: retain the Unlicense for new original public work, with the same ow
 
 ## Q2. Contributions and conduct
 
-Recommendation: require Developer Certificate of Origin 1.1 sign-off on contributions, inbound under the applicable file/package license, without a mandatory CLA. Contributors retain their rights; sign-off records their certification of the right to contribute. It does not cure missing ownership, assign copyright, or grant blanket future relicensing power. An automated sign-off check supplements human provenance and license review.
+Approved: require Developer Certificate of Origin 1.1 sign-off on contributions, inbound under the applicable file/package license, without a mandatory CLA. Contributors retain their rights; sign-off records their certification of the right to contribute. It does not cure missing ownership, assign copyright, or grant blanket future relicensing power. An automated sign-off check supplements human provenance and license review.
 
 Require origin and license disclosure for imported or generated material. Contributors remain responsible for the rights and review of AI-assisted contributions. Reject fabricated evidence, credentials, private Case records, unauthorized copies, and synthetic tests containing real secrets. Prefer deterministic synthetic fixtures and licensed samples.
 
@@ -40,7 +40,7 @@ Alternative: require a separately reviewed CLA before accepting contributions, w
 
 ## Q3. Maintainer authority and release approval
 
-Recommendation: owner-led governance with named delegated responsibilities and independent human review for critical changes and releases. The project owner approves roadmap/scope, maintainership, licensing changes, paid-service terms, and policy exceptions. Delegation is recorded, narrow, and revocable. No agent can appoint itself or grant itself an exception.
+Approved: owner-led governance with named delegated responsibilities and independent human review for critical changes and releases. The project owner approves roadmap/scope, maintainership, licensing changes, paid-service terms, and policy exceptions. Delegation is recorded, narrow, and revocable. No agent can appoint itself or grant itself an exception.
 
 Assign a code reviewer, rights/Source-policy reviewer, security responder, and release operator for each relevant component. These are responsibilities, not a claim of existing staff. One person may hold several roles, but the author or artifact producer cannot be their own independent critical approver. A release needs a named human operator and a different human approver. Critical changes to grants, credentials, isolation, encryption, synchronization, deletion, migrations, billing, or update trust require independent review before shipping.
 
@@ -52,7 +52,7 @@ Alternative: permit a single owner to review and publish with a documented self-
 
 ## Q4. Public issues and private vulnerability reports
 
-Recommendation: use public GitHub Issues for sanitized feature/bug reports and enable GitHub private vulnerability reporting and draft security advisories before public executable releases. Publish SECURITY.md with supported versions, reporting instructions, expected handling, and the distinction between a project vulnerability and a finding in an investigator's target program. Do not test GitHub reporting by submitting a real vulnerability or customer data.
+Approved: use public GitHub Issues for sanitized feature/bug reports and enable GitHub private vulnerability reporting and draft security advisories before public executable releases. Publish SECURITY.md with supported versions, reporting instructions, expected handling, and the distinction between a project vulnerability and a finding in an investigator's target program. Do not test GitHub reporting by submitting a real vulnerability or customer data.
 
 Target acknowledgement within three business days and initial triage within seven calendar days for a report containing enough information to investigate. Coordinate a disclosure target of 90 calendar days from a usable report, with earlier disclosure for active exploitation and documented mutually discussed extensions where justified. This is a coordination target, not a promise to fix every report within 90 days or permission to leave users exposed. Keep the reporter updated at least every 14 days while an accepted report is open.
 
@@ -66,7 +66,7 @@ Alternative: use the same private reporting and acknowledgement process, but cho
 
 ## Q5. Support and deprecation
 
-Recommendation: support the current application major and a retiring major for at least 12 months after its successor reaches GA. This includes material correctness and security fixes for the declared supported platform matrix, not every old minor forever. Publish supported minor/patch lines and a tested upgrade path. The SDK's independently approved minimum 12-month protocol window remains in force even if application support differs.
+Approved: support the current application major and a retiring major for at least 12 months after its successor reaches GA. This includes material correctness and security fixes for the declared supported platform matrix, not every old minor forever. Publish supported minor/patch lines and a tested upgrade path. The SDK's independently approved minimum 12-month protocol window remains in force even if application support differs.
 
 Give at least 90 days' notice for ordinary removal of a supported feature or service contract. Security, legal, upstream Source-policy, and unsupported OS/runtime constraints may require immediate suspension or earlier end of execution support. Explain the reason, affected versions, remaining read/export access, and available migration. Preserve old Case records, historical manifests, and archive readability under the existing compatibility requirements. Never silently replace pinned executable versions or delete material to simplify retirement.
 
@@ -76,7 +76,7 @@ Alternative: support only the current application major with a 90-day migration 
 
 ## Q6. Measurable release stages
 
-Recommendation: progress through Foundation proof, Local alpha, and Public beta with a limited managed preview. Approve Local GA and Paid managed GA separately after their respective gates pass. Set no calendar deadline before the implementation plan and staffing/cost checks exist. This lets the free local product ship when qualified without implying the paid service is ready.
+Approved: progress through Foundation proof, Local alpha, and Public beta with a limited managed preview. Approve Local GA and Paid managed GA separately after their respective gates pass. Set no calendar deadline before the implementation plan and staffing/cost checks exist. This lets the free local product ship when qualified without implying the paid service is ready.
 
 Foundation proof is internal. Prove public-only reproducible build inputs, actual import boundaries, key/storage/Artifact encryption and recovery on both desktop OS families and the native mobile storage path, one shared domain command with durable provenance, and a contained worker denied unauthorized access. Fail closed when containment cannot be qualified. These are real integration experiments, not acceptance of the architecture diagram.
 
@@ -96,6 +96,6 @@ Alternative: use the same proof stages and gates but wait for a joint Local/Paid
 
 ## Planning handoff
 
-The [registry](release-stage-policy.json) makes proposed milestones, dependencies, gate ownership roles, and the complete catalog target checkable. All gate measurements remain not-run. `node docs/planning/check-release-stage-policy.mjs` checks declarations and rejects invalid policy examples. It does not validate legal clearance, staffing, reporting setup, actual builds, or release readiness.
+The [registry](release-stage-policy.json) records approved milestones, dependencies, gate ownership roles, and the complete catalog target checkable. All gate measurements remain not-run. `node docs/planning/check-release-stage-policy.mjs` checks declarations and rejects invalid policy examples. It does not validate legal clearance, staffing, reporting setup, actual builds, or release readiness.
 
-After the user settles these six choices, audit the map for new material decisions before closing it. Preserve canonical issue resolutions and assemble the approved artifacts into an implementation-planning brief. Implementation tickets, repository consolidation of earlier untracked planning material, license-file changes, CI settings, hiring, purchases, and launches are subsequent work. Closing the planning map does not authorize an automatic release or claim the app exists.
+All six recommended choices are approved. The map audit found no remaining specified or newly surfaced material decisions before implementation planning. The [implementation-planning handoff](implementation-planning-handoff.md) indexes the approved decisions and the next planning steps. Implementation tickets, repository consolidation of earlier untracked planning material, license-file changes, CI settings, hiring, purchases, and launches are subsequent work. Closing the planning map does not authorize an automatic release or claim the app exists.
