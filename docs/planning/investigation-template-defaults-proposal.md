@@ -1,6 +1,6 @@
 # Investigation template defaults and acceptance criteria
 
-Status: draft for user review. Five choices remain open. The seven presets and scenario requirements are proposed configuration and implementation criteria, not working integrations or executed acceptance tests.
+Status: approved by the user on 2026-10-25 through acceptance of all five recommended choices. Zero questions remain for this decision. The seven presets and scenario requirements are approved configuration and implementation criteria, not working integrations or executed acceptance tests.
 
 Decision: [Define investigation template defaults and acceptance criteria](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/28).
 
@@ -16,9 +16,9 @@ The [autonomy decision](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/9
 
 ## Q1. Seven versioned presets on one Case model
 
-Recommendation: ship General research, Missing person, Criminal investigation, Cyber investigation, Financial investigation, GitHub and code research, and a dedicated Bug bounty preset. The last is a focused Cyber workflow, not a separate data model.
+Approved: ship General research, Missing person, Criminal investigation, Cyber investigation, Financial investigation, GitHub and code research, and a dedicated Bug bounty preset. The last is a focused Cyber workflow, not a separate data model.
 
-Proposed glossary definition: a Case template is a versioned configuration preset for intake, suggested organization, relevant capabilities, and review guidance. It uses the universal Case model and grants no authority. It is distinct from a Capability pack, which groups Connectors and policy defaults, and from an executable Plugin.
+Approved glossary definition: a Case template is a versioned configuration preset for Case intake, suggested organization, relevant capabilities, and review guidance. It uses the universal Case model and grants no authority. It is distinct from a Capability pack, which groups Connectors and policy defaults, and from an executable Plugin.
 
 Each Case records the selected template ID/version, effective configuration snapshot, and deliberate overrides. Template changes appear in Case history. The original Case records, Artifact versions, Entity identities, truth states, and grants remain independent of the preset. A Case can continue when a template is retired or absent from the library. Changing a template never silently reclassifies existing material or launches work.
 
@@ -86,9 +86,9 @@ Review original request/response evidence, reproduction steps, impact, unresolve
 
 ## Q2. Starter Research-plan ceilings
 
-Recommendation: use one conservative first-pass profile across presets. Choosing a template does not start this plan or change Suggest only. A person must still approve actions or a bounded executable plan under the existing autonomy rules.
+Approved: use one conservative first-pass profile across presets. Choosing a template does not start this plan or change Suggest only. A person must still approve actions or a bounded executable plan under the existing autonomy rules.
 
-The proposed first-pass ceilings are ten elapsed minutes, 20 Connector actions, 100 network requests, 100 MiB of logical stored output, 50 output Artifacts, 500 Observation records, Pivot depth one, and three parallel branches. These are ceilings, not goals or required spend. They apply to the parent and all subagents together. Redirects, pagination, browser subresources, retries, and external-tool traffic consume the actual applicable network and cost budgets; they are not free work hidden inside one tool call.
+The approved first-pass ceilings are ten elapsed minutes, 20 Connector actions, 100 network requests, 100 MiB of logical stored output, 50 output Artifacts, 500 Observation records, Pivot depth one, and three parallel branches. These are ceilings, not goals or required spend. They apply to the parent and all subagents together. Redirects, pagination, browser subresources, retries, and external-tool traffic consume the actual applicable network and cost budgets; they are not free work hidden inside one tool call.
 
 Unapproved new charges remain zero. AI use follows the explicitly selected provider and run budget already approved by the user, rather than pretending every model call is free or giving it an unlimited budget. Paid sources need their own visible approved cap. A template cannot configure shared commercial keys, buy a plan, or approve overages.
 
@@ -98,7 +98,7 @@ The user may prepare a broader plan with reviewed scope/budget changes. Do not s
 
 ## Q3. Progressive intake with explicit unknowns
 
-Recommendation: let users create and organize a draft with partial information, then require the specific fields and authority needed before each action. Show a short initial form and reveal relevant sections as Seeds and objectives are added.
+Approved: let users create and organize a draft with partial information, then require the specific fields and authority needed before each action. Show a short initial form and reveal relevant sections as Seeds and objectives are added.
 
 Common intake starts with a title/objective draft, selected template, supplied Seeds and origin, and relevant scope questions. Unknown, not supplied, and not applicable remain distinct. A date/time may be approximate or an interval. Do not invent a full timestamp, adult age, identifier ownership, jurisdiction, or permission to make a form appear complete.
 
@@ -108,7 +108,7 @@ Before network/tool execution, the current host still validates the authorizatio
 
 ## Q4. Private customization and template versions
 
-Recommendation: provide maintainer-curated built-in/public presets and private device/personal/Organization clones using the same non-executable configuration format. Accountless local customization works on the device. Any synchronized library follows the existing paid identity, sharing, and access rules.
+Approved: provide maintainer-curated built-in/public presets and private device/personal/Organization clones using the same non-executable configuration format. Accountless local customization works on the device. Any synchronized library follows the existing paid identity, sharing, and access rules.
 
 Clones may adjust names, guidance, suggested organization, supported intake fields, recommended packs, and proposed starting ceilings within current policy maxima. A larger recommended budget still needs explicit plan review and cannot widen an existing run or grant. Clones reference only known safe field types and component identifiers. They cannot contain executable expressions, arbitrary schema compilation, scripts, credentials, package installers, permission grants, or automatic outreach/research triggers. Treat guidance as subordinate instruction content, not permission, and render it without executable markup. A helper that executes code still follows the Plugin policy. A template is a core configuration preset, not a fifth extension type or a new unreviewed public catalog.
 
@@ -118,7 +118,7 @@ Publish immutable template versions and pin effective snapshots in Cases. Adopti
 
 ## Q5. Optional guidance, review, and completion
 
-Recommendation: show concise optional checklists tailored to the preset, with links into existing Briefing, Sources, Graph/Timeline/Map, live work, and Report views. Keep the complete underlying Case workflow available. Guidance may recommend a next step, not silently execute it or present a procedural checklist as a factual conclusion.
+Approved: show concise optional checklists tailored to the preset, with links into existing Briefing, Sources, Graph/Timeline/Map, live work, and Report views. Keep the complete underlying Case workflow available. Guidance may recommend a next step, not silently execute it or present a procedural checklist as a factual conclusion.
 
 Run completion reports actual coverage and complete/partial/no-results outcomes. A run ending does not resolve a Lead, complete another actor's Task, accept Findings, or close the Case. A human records the Case outcome, including unresolved or stopped investigations, and chooses closure through the existing lifecycle. A template must not invent a solved percentage or insist that all questions have been answered before a Case can be closed with an honest reason.
 
@@ -151,6 +151,6 @@ Bug-bounty research must preserve the original scope Artifact, stop affected wor
 
 The declaration check is `node docs/planning/check-investigation-templates.mjs`. It verifies the seven-preset set, shared defaults, catalog references, scenario declarations, and invalid examples. It does not contact a Source, execute a Research run, evaluate real permissions, or replace client/host acceptance tests.
 
-## Pending decisions
+## Decision record
 
-The five choices are the preset set, starter limits, progressive intake, private customization/versioning, and optional guidance/review criteria. None is approved yet. The proposed Case-template definition belongs in the root glossary when resolved; this draft changes no glossary term silently. Licensing, release slicing, and broader governance remain with the final existing decision ticket.
+The user approved all five recommended choices: the seven-preset set, starter limits, progressive intake, private customization/versioning, and optional guidance/review criteria. The approved Case-template definition is recorded above and in the local root glossary. Licensing, release slicing, and broader governance remain with [Define licensing, governance, and release stages](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/29).

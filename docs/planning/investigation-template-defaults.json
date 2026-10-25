@@ -1,5 +1,5 @@
 {
-  "status": "draft",
+  "status": "approved",
   "decisionIssue": 28,
   "implementationVerified": false,
   "decisions": ["preset-set", "starter-limits", "progressive-intake", "private-customization", "guided-review"],
