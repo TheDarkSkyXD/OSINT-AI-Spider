@@ -1,0 +1,39 @@
+{
+  "status": "draft",
+  "decisionIssue": 26,
+  "decisions": ["core-stack", "mobile-stack", "local-browser-route", "repository-split", "build-and-boundaries"],
+  "modules": [
+    {"id":"contracts","path":"packages/contracts","visibility":"public","layer":"contracts","imports":[]},
+    {"id":"ports","path":"packages/capabilities","visibility":"public","layer":"ports","imports":["contracts"]},
+    {"id":"domain","path":"packages/domain","visibility":"public","layer":"domain","imports":["contracts","ports"]},
+    {"id":"client","path":"packages/client","visibility":"public","layer":"client","imports":["contracts"]},
+    {"id":"views","path":"packages/view-models","visibility":"public","layer":"view","imports":["contracts"]},
+    {"id":"tokens","path":"packages/design-tokens","visibility":"public","layer":"tokens","imports":[]},
+    {"id":"web-ui","path":"packages/ui-web","visibility":"public","layer":"ui","imports":["client","contracts","views","tokens"]},
+    {"id":"web","path":"apps/web","visibility":"public","layer":"ui","imports":["web-ui","client","contracts"]},
+    {"id":"desktop-renderer","path":"apps/desktop/src/renderer","visibility":"public","layer":"ui","imports":["web-ui","client","contracts"]},
+    {"id":"desktop-preload","path":"apps/desktop/src/preload","visibility":"public","layer":"client","imports":["contracts"]},
+    {"id":"desktop-main","path":"apps/desktop/src/main","visibility":"public","layer":"composition","imports":["contracts","ports","local-adapters"]},
+    {"id":"local-transport","path":"apps/local-host/src/transport","visibility":"public","layer":"transport","imports":["contracts","domain"]},
+    {"id":"local-host","path":"apps/local-host/src/composition","visibility":"public","layer":"composition","imports":["local-transport","domain","local-adapters"]},
+    {"id":"runner","path":"apps/runner/src/composition","visibility":"public","layer":"composition","imports":["contracts","domain","local-adapters"]},
+    {"id":"local-adapters","path":"packages/adapters-local","visibility":"public","layer":"adapter","imports":["contracts","ports"]},
+    {"id":"mobile-ui","path":"apps/mobile/src/ui","visibility":"public","layer":"ui","imports":["client","contracts","views","tokens"]},
+    {"id":"mobile-transport","path":"apps/mobile/src/transport","visibility":"public","layer":"transport","imports":["contracts","domain"]},
+    {"id":"mobile","path":"apps/mobile/src/composition","visibility":"public","layer":"composition","imports":["mobile-ui","mobile-transport","domain","mobile-adapters","client"]},
+    {"id":"mobile-adapters","path":"packages/adapters-mobile","visibility":"public","layer":"adapter","imports":["contracts","ports"]},
+    {"id":"connector-sdk","path":"packages/connector-sdk","visibility":"public","layer":"client","imports":["contracts"]},
+    {"id":"native-platform","path":"native/platform","visibility":"public","layer":"native","imports":["contracts"]},
+    {"id":"test-support","path":"packages/test-support","visibility":"public","layer":"test","imports":["contracts","ports","domain"]},
+    {"id":"managed-adapters","path":"private:packages/managed-adapters","visibility":"private","layer":"adapter","imports":["contracts","ports"]},
+    {"id":"managed-transport","path":"private:apps/api/src/transport","visibility":"private","layer":"transport","imports":["contracts","domain"]},
+    {"id":"managed-api","path":"private:apps/api/src/composition","visibility":"private","layer":"composition","imports":["managed-transport","domain","managed-adapters"]},
+    {"id":"managed-worker","path":"private:apps/worker/src/composition","visibility":"private","layer":"composition","imports":["contracts","domain","managed-adapters"]}
+  ],
+  "routes": [
+    {"id":"desktop","label":"Desktop local","steps":["Electron renderer","Restricted preload and IPC","Local TypeScript Case host","Rust platform broker","Encrypted local Case"],"authority":"Local Case host","execution":"Approved local tools or attached Runner","scope":"Free, accountless, Windows and Linux"},
+    {"id":"browser","label":"Browser local","steps":["Same React web application","Same-origin loopback API","Local TypeScript Case host","Rust platform broker","Encrypted local Case"],"authority":"Local Case host","execution":"Same approved capabilities as Electron","scope":"Free, accountless, runtime installed on this computer"},
+    {"id":"managed","label":"Managed web","steps":["React web application","Authenticated HTTPS API","Private managed Case host","PostgreSQL and object-storage adapters","Encrypted managed Case"],"authority":"Managed Case host","execution":"Managed workers or approved attached Runners","scope":"Paid account; one authoritative Case host"},
+    {"id":"mobile","label":"Mobile local","steps":["Expo React Native interface","Typed local controller","Shared TypeScript Case rules","Qualified native storage adapters","Encrypted local Case"],"authority":"Mobile local Case host","execution":"Supported local editing and review; no arbitrary tools","scope":"Free local Cases; focused features on iOS and Android"}
+  ]
+}

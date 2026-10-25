@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case authority routes</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; color: var(--foreground, #ededed); font: 15px/1.45 var(--font-sans, system-ui, sans-serif); }
+  h2 { margin: 0 0 4px; font-size: 19px; font-weight: 650; }
+  .draft { margin: 0 0 16px; color: var(--muted-foreground, #a8a8a8); font-size: 13px; }
+  .choices { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  button { font: inherit; padding: 9px 12px; border: 1px solid var(--border, #505050); border-radius: var(--radius, 8px); color: inherit; background: transparent; cursor: pointer; min-height: 44px; }
+  button[aria-pressed="true"] { background: var(--foreground, #ededed); color: var(--background, #161616); }
+  button:focus-visible { outline: 2px solid var(--ring, #ccc); outline-offset: 3px; }
+  .flow { list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; padding: 0; margin: 0 0 16px; }
+  .flow li { position: relative; padding: 16px; border: 1px solid var(--border, #505050); border-radius: var(--radius, 8px); min-height: 116px; display: flex; align-items: center; overflow-wrap: anywhere; font-size: 13px; }
+  .flow li + li::before { content: '\2192'; position: absolute; left: -16px; color: var(--muted-foreground, #a8a8a8); }
+  .authority { margin: 0 0 7px; font-size: 16px; font-weight: 650; }
+  .detail { margin: 0 0 6px; }
+  .scope { margin: 0; color: var(--muted-foreground, #a8a8a8); font-size: 13px; }
+  @media (max-width: 560px) {
+    .choices button { flex: 1 1 calc(50% - 8px); }
+    .flow { grid-template-columns: 1fr; gap: 18px; }
+    .flow li { min-height: auto; font-size: 14px; }
+    .flow li + li::before { content: '\2193'; left: 50%; top: -21px; }
+  }
+</style>
+</head>
+<body>
+<main id="architecture-routes">
+  <h2>Case authority by entry point</h2>
+  <p class="draft">Proposed architecture. Select a route. No runtime compatibility claimed.</p>
+  <div class="choices" role="group" aria-label="Application entry point"></div>
+  <section aria-live="polite" aria-atomic="true">
+    <ol class="flow" aria-label="Runtime call path"></ol>
+    <p class="authority"></p>
+    <p class="detail"></p>
+    <p class="scope"></p>
+  </section>
+</main>
+<script>
+  const routes = [{"id":"desktop","label":"Desktop local","steps":["Electron renderer","Restricted preload and IPC","Local TypeScript Case host","Rust platform broker","Encrypted local Case"],"authority":"Local Case host","execution":"Approved local tools or attached Runner","scope":"Free, accountless, Windows and Linux"},{"id":"browser","label":"Browser local","steps":["Same React web application","Same-origin loopback API","Local TypeScript Case host","Rust platform broker","Encrypted local Case"],"authority":"Local Case host","execution":"Same approved capabilities as Electron","scope":"Free, accountless, runtime installed on this computer"},{"id":"managed","label":"Managed web","steps":["React web application","Authenticated HTTPS API","Private managed Case host","PostgreSQL and object-storage adapters","Encrypted managed Case"],"authority":"Managed Case host","execution":"Managed workers or approved attached Runners","scope":"Paid account; one authoritative Case host"},{"id":"mobile","label":"Mobile local","steps":["Expo React Native interface","Typed local controller","Shared TypeScript Case rules","Qualified native storage adapters","Encrypted local Case"],"authority":"Mobile local Case host","execution":"Supported local editing and review; no arbitrary tools","scope":"Free local Cases; focused features on iOS and Android"}];
+  const root = document.getElementById('architecture-routes');
+  const choices = root.querySelector('.choices');
+  const flow = root.querySelector('.flow');
+  function selectRoute(route) {
+    flow.replaceChildren(...route.steps.map(step => {
+      const item = document.createElement('li');
+      item.textContent = step;
+      return item;
+    }));
+    root.querySelector('.authority').textContent = 'Authority: ' + route.authority;
+    root.querySelector('.detail').textContent = route.execution;
+    root.querySelector('.scope').textContent = route.scope;
+    for (const button of choices.children) button.setAttribute('aria-pressed', String(button.dataset.route === route.id));
+    root.dataset.selectedRoute = route.id;
+  }
+  for (const route of routes) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = route.label;
+    button.dataset.route = route.id;
+    button.addEventListener('click', () => selectRoute(route));
+    choices.append(button);
+  }
+  for (const button of choices.children) {
+    button.click();
+    if (root.dataset.selectedRoute !== button.dataset.route || flow.children.length !== 5 || button.getAttribute('aria-pressed') !== 'true') throw new Error('Route interaction failed');
+  }
+  selectRoute(routes[0]);
+  function checkLayout() {
+    if (document.documentElement.scrollWidth > innerWidth + 1) throw new Error('Architecture routes overflow horizontally');
+  }
+  requestAnimationFrame(checkLayout);
+  console.info('Verified ' + routes.length + ' selectable architecture routes. These are proposed runtime calls, not source imports.');
+</script>
+</body>
+</html>
