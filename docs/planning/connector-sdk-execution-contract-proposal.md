@@ -1,6 +1,6 @@
 # Connector SDK and execution contract
 
-Status: draft for user review. This proposal adds four choices to the approved catalog and extension rules. None of those choices is accepted yet, and no SDK or sandbox implementation is present in this repository.
+Status: approved planning decision. On October 25, 2026, the user selected all four recommendations covering the portable authoring contract, cache and retry defaults, guided runtime setup, and compatibility and maintenance. No SDK or sandbox implementation is present in this repository.
 
 Decision: [Define the Connector SDK and source execution contract](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/25).
 
@@ -12,9 +12,9 @@ The [approved catalog](initial-connector-catalog-proposal.md) defines 33 target 
 
 The [lifecycle decision](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/20) fixes durable operation IDs, attempt leases, checkpoints, stale-attempt rejection, and retention of permitted late captures. The [provenance decision](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/14) requires preserved originals, exact-version citations, explicit capture limits, and human acceptance of Findings. These are constraints, not new questions.
 
-## Q1. Contract and responsibility boundaries
+## Approved contract and responsibility boundaries
 
-Recommendation: adopt the following portable, host-mediated contract, with one schema source and a first-party TypeScript authoring SDK. Other languages and existing tools use the documented worker bridge. They do not need to be rewritten in TypeScript. A separate Python authoring SDK is deferred until demand justifies maintaining it.
+Use the following portable, host-mediated contract, with one schema source and a first-party TypeScript authoring SDK. Other languages and existing tools use the documented worker bridge. They do not need to be rewritten in TypeScript. A separate Python authoring SDK is deferred until demand justifies maintaining it.
 
 ### Alternatives considered
 
@@ -22,11 +22,11 @@ Three concrete shapes were considered before selecting the proposed contract:
 
 1. A Connector receives an in-process application object, fetches data, and writes Case records directly. It is convenient for authors but cannot satisfy the approved isolation or authoritative-write boundaries.
 2. Every Connector is a standalone service with its own credentials, persistence, retries, and authorization endpoints. It supports many languages but duplicates policy and introduces independent Case writers. A remote service may still be an approved Source adapter; it cannot become a second Case authority.
-3. A Connector runs as a bounded worker, requests named host capabilities, and returns typed output batches. The host authorizes each action, brokers access, and commits accepted output. This is the proposed shape.
+3. A Connector runs as a bounded worker, requests named host capabilities, and returns typed output batches. The host authorizes each action, brokers access, and commits accepted output. This is the selected shape.
 
 ### Manifest
 
-Use one machine-readable schema source for manifests, wire messages, input types, output types, and error variants. Generate authoring types and protocol documentation from it. The proposed encoding is JSON with [JSON Schema 2020-12](https://json-schema.org/draft/2020-12). Binary content travels through bounded Artifact transfer handles rather than inline JSON. Schema validation checks message shape; explicit Domain and broker checks enforce permissions, destinations, scope, budgets, and valid references.
+Use one machine-readable schema source for manifests, wire messages, input types, output types, and error variants. Generate authoring types and protocol documentation from it. The encoding is JSON with [JSON Schema 2020-12](https://json-schema.org/draft/2020-12). Binary content travels through bounded Artifact transfer handles rather than inline JSON. Schema validation checks message shape; explicit Domain and broker checks enforce permissions, destinations, scope, budgets, and valid references.
 
 The manifest includes the already approved publisher, immutable version, package and manifest digests, signature, dependency lock, licenses, source terms, maintenance owner, capabilities, platform claims, and compatibility requirements. Add the following execution details:
 
@@ -53,7 +53,7 @@ The wire contract has these message families:
 - `finish` reports a complete, partial, or no-results outcome and its coverage. `failure` reports a typed error and the last acknowledged batch. Both remain distinct from the Research run lifecycle.
 - Host controls stop new actions, request a safe pause or cancellation, and revoke an attempt. Emergency stop revokes capabilities before process termination.
 
-These names describe a proposed protocol, not callable APIs already shipped by the product. The process adapter uses bounded framed messages over inherited private pipes. A remote Runner uses authenticated encrypted transport carrying the same application contract. Neither exposes a general remote shell.
+These names define the planned protocol. They are not callable APIs already shipped by the product. The process adapter uses bounded framed messages over inherited private pipes. A remote Runner uses authenticated encrypted transport carrying the same application contract. Neither exposes a general remote shell.
 
 Reject oversized frames, unbounded nesting, invalid sequence transitions, unknown required message variants, and output beyond the remaining limit. Separate protocol frames from bounded diagnostic logs. A worker crash or absent final message does not erase earlier acknowledged batches.
 
@@ -71,7 +71,7 @@ Typed errors distinguish setup required, runtime missing, access restricted, rat
 
 ### Ownership and placement
 
-The proposed ownership map is conceptual. It does not create these source directories yet.
+The ownership map describes planned code responsibilities. It does not create these source directories yet.
 
 - Shared contracts own schemas, wire-safe values, generated types, and conformance fixtures.
 - Domain owns manifest semantics, effective grants, permitted state transitions, scope decisions, budget rules, output acceptance, and user-facing outcome meaning.
@@ -82,9 +82,9 @@ The proposed ownership map is conceptual. It does not create these source direct
 
 Domain imports contracts and ports. Concrete adapters import the ports they implement. UI never imports the SDK's privileged host adapters. Source-import boundaries become part of the normal lint gate when the implementation creates JavaScript or TypeScript packages.
 
-## Q2. Freshness, caching, and retry defaults
+## Approved freshness, caching, and retry defaults
 
-Recommendation: use a transparent cache within the same Case when the Source permits reuse and the entry is within its declared freshness window. Show the original collection time, cache use, and coverage. Offer an explicit fresh collection when policy and budgets permit it. Missing or unclear cache permission disables reusable response caching.
+Use a transparent cache within the same Case when the Source permits reuse and the entry is within its declared freshness window. Show the original collection time, cache use, and coverage. Offer an explicit fresh collection when policy and budgets permit it. Missing or unclear cache permission disables reusable response caching.
 
 Cache keys include Case identity, Source and endpoint, normalized query, representation, credential principal and entitlement scope, and relevant Connector or parser versions. Different Cases, accounts, permissions, or paid entitlements never share reusable results by default. Provider validators and cache headers further constrain reuse. Authentication and authorization checks still run on a cache hit.
 
@@ -96,9 +96,9 @@ Authentication failures, permission errors, scope changes, unsupported schemas, 
 
 Rate accounting covers the provider account, destination, Organization or device, Case, run, and operation as applicable. Parallel child agents and retries consume their parent's remaining budget. Several Runners using the same credential alias need shared quota accounting. Independently configured devices cannot promise a global provider quota unless they coordinate; use a dedicated credential or conservative allocation and honor provider limits.
 
-## Q3. Optional runtimes and external tools
+## Approved optional runtimes and external tools
 
-Recommendation: offer guided setup with detected runtime versions and project-verified installation artifacts where the platform supports them. Show download size, license, permissions, platform support, and resource requirements before installation. Otherwise provide checked manual setup instructions. Installing a runtime never enables a Case grant.
+Offer guided setup with detected runtime versions and project-verified installation artifacts where the platform supports them. Show download size, license, permissions, platform support, and resource requirements before installation. Otherwise provide checked manual setup instructions. Installing a runtime never enables a Case grant.
 
 There are two execution classes under the same contract. Deterministic processors use capability-restricted WASM where practical. Provider, browser, and native-tool adapters run outside the UI and Case store under a verified operating-system isolation profile. A process boundary, temporary directory, or language permission flag alone is insufficient proof of isolation.
 
@@ -114,9 +114,9 @@ Some tools expect plaintext API keys or make direct connections that a host cann
 
 An attached Runner cannot continue new operations without current host authority. Losing the control channel stops new dispatch and moves the run to Waiting under its execution-lease rules. Stale attempts cannot commit changes. Permitted late captures return through the host's separate reconciliation path; they do not restore a revoked lease or authorize more actions.
 
-## Q4. Compatibility and maintenance
+## Approved compatibility and maintenance
 
-Recommendation: publish an explicit SDK compatibility matrix and support each protocol major for at least 12 months after its successor becomes generally available. Block unsupported dispatch with an explanation. A security, legal, or Source-policy suspension overrides the support window. This window covers the contract, not an external provider's continued availability.
+Publish an explicit SDK compatibility matrix and support each protocol major for at least 12 months after its successor becomes generally available. Block unsupported dispatch with an explanation. A security, legal, or Source-policy suspension overrides the support window. This window covers the contract, not an external provider's continued availability.
 
 The host negotiates a declared supported protocol version and required feature set before dispatch. Additive optional metadata may be ignored only where the schema explicitly permits it. Unknown permissions, actions, mandatory features, and semantic enum values fail closed. A manifest version, wire protocol version, Observation schema version, and package version remain separate identifiers.
 
@@ -145,6 +145,6 @@ Health has separate dimensions for package integrity, runtime readiness, Source 
 
 ## Decision boundary
 
-The four choices are the portable contract, cache and retry defaults, guided runtime setup, and compatibility and maintenance policy. The user can approve them together or change individual choices. Acceptance resolves this planning ticket. It does not admit any adapter or prove these controls are implemented.
+All four choices are approved. SDK decision questions remaining: 0. This resolves the planning ticket. It does not admit any adapter or prove these controls are implemented.
 
 Implementation must publish complete schemas, generated SDK documentation, platform-specific isolation evidence, and executable conformance results before claiming compatibility. Concrete sandbox engines, installer technology, framing libraries, numerical resource limits per adapter, and hosting vendors are implementation selections constrained by this contract.
