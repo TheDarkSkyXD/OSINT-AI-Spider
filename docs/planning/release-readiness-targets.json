@@ -1,5 +1,5 @@
 {
-  "status": "draft",
+  "status": "approved",
   "decisionIssue": 27,
   "measured": false,
   "decisions": ["platforms", "release-and-migrations", "performance", "reliability-and-recovery", "observability", "incident-readiness", "hosting-boundary"],

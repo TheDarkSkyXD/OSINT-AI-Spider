@@ -1,10 +1,10 @@
 # Release engineering and operational readiness
 
-Status: draft for user review. Seven choices remain open. Numerical values are proposed engineering and launch-gate targets, not measurements, public guarantees, or selected service contracts.
+Status: approved planning decision. On October 25, 2026, the user selected all seven recommendations. Numerical values are approved engineering and launch-gate targets, not measurements, public guarantees, or selected service contracts.
 
 Decision: [Define release engineering and operational readiness](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/27).
 
-Evidence: [primary-source constraints](../research/release-operational-constraints.md). The [target registry](release-readiness-targets.json) records proposed numerical limits and the [checker](check-release-readiness.mjs) verifies planning consistency. No application, release workflow, backup system, or benchmark is implemented here.
+Evidence: [primary-source constraints](../research/release-operational-constraints.md). The [target registry](release-readiness-targets.json) records approved numerical limits and the [checker](check-release-readiness.mjs) verifies planning consistency. No application, release workflow, backup system, or benchmark is implemented here.
 
 ## Existing commitments
 
@@ -14,9 +14,9 @@ The [SDK contract](connector-sdk-execution-contract-proposal.md) fixes exact-ver
 
 The [subscription decision](subscription-plans.md) fixes 30 days of managed recovery points, a 30-day read/export exit period, and backup expiry within a further 30 days after primary deletion, subject to its disclosed exceptions. It also requires measured hosting, recovery, and compute economics before publishing price or service guarantees. This proposal preserves those periods and does not set an unmeasured included compute allowance.
 
-## Q1. Supported launch platforms
+## Approved supported launch platforms
 
-Recommendation: qualify a bounded platform matrix before claiming support:
+Qualify a bounded platform matrix before claiming support:
 
 - Electron and local runtime on serviced Windows 11 releases, x64; Ubuntu 24.04 LTS and 26.04 LTS, x64.
 - Desktop web on current and previous stable Chrome, Edge, and Firefox. Include current and previous stable Safari for managed web after its full workspace checks pass. Safari is not a claim of a macOS local runtime.
@@ -27,9 +27,9 @@ These are project support targets, not the minimum versions permitted by Electro
 
 An unsupported platform may receive a clear compatibility explanation or read-only import alternative; it must not be advertised as qualified. A failed platform build delays that platform's release. It does not justify shipping plaintext storage, disabling process isolation, or silently removing required web/Electron features. Continue upstream security maintenance rather than preserving an obsolete Electron runtime to satisfy wire compatibility.
 
-## Q2. Release, update, and migration gates
+## Approved release, update, and migration gates
 
-Recommendation: extend the existing ordinary seven-day immutable-artifact hold to normal public app/runtime releases and managed deployment candidates. Keep the existing audited emergency exception for a security fix, legal revocation, or similarly urgent incident. This extends the approved npm publication hold; it does not replace the separate seven-day dependency-age policy.
+Extend the existing ordinary seven-day immutable-artifact hold to normal public app/runtime releases and managed deployment candidates. Keep the existing audited emergency exception for a security fix, legal revocation, or similarly urgent incident. This extends the approved npm publication hold; it does not replace the separate seven-day dependency-age policy.
 
 ### Candidate and promotion
 
@@ -61,9 +61,9 @@ Separate code rollback, data repair, and full disaster restore. Prefer a compati
 
 Portable archives remain versioned. Keep documented read/conversion paths for all published archive formats, with original bytes preserved and unsupported fields reported. An archive conversion is not permission to run an obsolete vulnerable application or erase provenance. Test imports against historical fixtures, tampered content, and current redaction rules.
 
-## Q3. Performance and resource budgets
+## Approved performance and resource budgets
 
-Recommendation: use the target registry as the initial measurable budget, then require actual benchmark evidence before claiming readiness. These are acceptance targets, not current results or hard Case-size quotas.
+Use the target registry as the initial measurable budget, then require actual benchmark evidence before claiming readiness. These are acceptance targets, not current results or hard Case-size quotas.
 
 The desktop reference is an 8 GiB RAM, four-logical-core SSD machine. The synthetic Case has 10,000 Entities, 50,000 Relationships, 100,000 Observations, and 10,000 Artifacts totaling 10 GiB. Publish the generator seed, file types, text/index size, graph distribution, machine identity, encryption settings, build digest, and background workload for each result. Test both qualified desktop operating systems.
 
@@ -92,13 +92,13 @@ Larger Cases remain supported through paging, streamed imports, bounded graph pr
 
 Correctness, retention, authorization, and durable acknowledgements have no 5% failure allowance. A latency target cannot authorize losing a save, skipping a permission check, or mislabeling a partial result as complete.
 
-## Q4. Managed availability, backups, and recovery
+## Approved managed availability, backups, and recovery
 
-Recommendation: target 99.9% monthly core-service availability, a disaster recovery-point objective of 15 minutes, and a disaster recovery-time objective of eight hours. Preserve the already approved 30-day recovery history. Ordinary process restarts must retain acknowledged durable commits; the 15-minute loss window describes a disaster affecting the primary durable environment.
+Target 99.9% monthly core-service availability, a disaster recovery-point objective of 15 minutes, and a disaster recovery-time objective of eight hours. Preserve the already approved 30-day recovery history. Ordinary process restarts must retain acknowledged durable commits; the 15-minute loss window describes a disaster affecting the primary durable environment.
 
 Core availability is successful completion of eligible authorized login, Case read/write, synchronization catch-up, and export-control operations divided by eligible attempts over a rolling 30-day window. Correct denials and invalid requests are excluded; internal failures, required identity/storage dependencies, and planned maintenance count. External source/model outages are reported separately, but accepting a Research run or surfacing its state still counts as a core operation. Use privacy-safe synthetic probes at least every 60 seconds to detect low-traffic outages; publish both request and synthetic results rather than hiding an outage behind an empty denominator.
 
-Only publish a customer commitment after at least 30 days of representative prelaunch observation, load testing, staffing validation, and cost review against the approved subscription targets. A contractual Enterprise SLA, remedies, dedicated region, or shorter recovery objective requires separately tested operations and a contract. A draft target does not create one.
+Only publish a customer commitment after at least 30 days of representative prelaunch observation, load testing, staffing validation, and cost review against the approved subscription targets. A contractual Enterprise SLA, remedies, dedicated region, or shorter recovery objective requires separately tested operations and a contract. Planning approval does not create one.
 
 Use tested base backups, continuous recovery logs, versioned encrypted Artifact storage, key recovery, and explicit recovery manifests. Keep an isolated backup account and another region inside the chosen hosting boundary. Track the latest recoverable database and Artifact watermarks together; the recovery point is the latest verified consistent cut, not whichever store reports the newest timestamp.
 
@@ -110,21 +110,21 @@ Preserve deletion deadlines across backup expiry and restore. Isolated recovery 
 
 Local Cases offer consistent encrypted snapshots to a user-selected independent destination and a reminder before risky changes. They have no project-operated off-device backup or recovery guarantee by default. A snapshot on the same failed disk cannot supply disaster recovery. Local reminders and backup operations must work without paid registration.
 
-## Q5. Observability and privacy
+## Approved observability and privacy
 
-Recommendation: collect allowlisted, content-free managed operational metrics and keep client diagnostic uploads off by default. Permit deliberate preview-and-send diagnostic packages and revocable opt-in crash reporting, with no Case payloads or credentials.
+Collect allowlisted, content-free managed operational metrics and keep client diagnostic uploads off by default. Permit deliberate preview-and-send diagnostic packages and revocable opt-in crash reporting, with no Case payloads or credentials.
 
 Operational counters cover core success/latency, queue state, backup/Artifact lag, restore verification, resource exhaustion, Connector health, revocation, version compatibility, and rollout errors. Use build, operation category, region, and bounded error class rather than Case titles, names, query terms, URLs, evidence bodies, prompt text, identifiers under investigation, raw Case IDs, session tokens, or secrets. Automatic exception/HTTP instrumentation must use the same allowlist before export. Hashing predictable identifiers is not an adequate anonymization policy.
 
-Proposed retention is seven days for local diagnostic logs, 14 days for managed operational logs, seven days for traces, and 90 days for minimally necessary managed authentication/security logs. Raw IP or account details needed for a narrowly scoped security investigation require restricted access, purpose, expiry, and separate review. Diagnostic support access does not grant Case membership.
+Retention targets are seven days for local diagnostic logs, 14 days for managed operational logs, seven days for traces, and 90 days for minimally necessary managed authentication/security logs. Raw IP or account details needed for a narrowly scoped security investigation require restricted access, purpose, expiry, and separate review. Diagnostic support access does not grant Case membership.
 
 Case history, accepted results, billing records, customer-visible usage, and formal security evidence follow their existing purpose-specific policies. The short operational-log windows must not trim Case history or erase a user's recoverable investigation. Deletion requests propagate through diagnostic attachments and telemetry stores where applicable. A time-bounded incident preservation exception is recorded and disclosed under policy.
 
 Do not enable analytics, session replay, or automatic screenshots of Case views by default. Browser/mobile/desktop privacy choices must not be reset by an update. Show what a support package contains before upload, let the user remove files, and preserve the authorized destination and retention notice.
 
-## Q6. Incident response and operational ownership
+## Approved incident response and operational ownership
 
-Recommendation: require a staffed 24/7 operational pager with a backup responder before paid managed launch. Target acknowledgement of a P0 incident within 15 minutes, public status updates at least hourly during a continuing core outage, and a reviewed incident report within five business days. These are launch-readiness targets, not promises of free 24/7 individual support.
+Require a staffed 24/7 operational pager with a backup responder before paid managed launch. Target acknowledgement of a P0 incident within 15 minutes, public status updates at least hourly during a continuing core outage, and a reviewed incident report within five business days. These are launch-readiness targets, not promises of free 24/7 individual support.
 
 P0 includes suspected cross-Case disclosure, signing or production credential compromise, data corruption/loss, or widespread essential-service failure. Give each release a named release operator, service incident lead, security responder, backup/key custodian, and backup operator. Governance assigns actual people and approval rules; a role label alone does not provide coverage. Run an outage, compromise/revocation, and disaster-restore drill before general paid availability.
 
@@ -138,9 +138,9 @@ An urgent patch may use the already approved exception to dependency age, artifa
 
 If pager staffing, recovery drills, or essential controls are not ready, keep managed access in a clearly limited preview and delay paid general availability. Publish local releases only when their own platform gates pass. Customer-support hours and Enterprise service terms remain explicit commercial/governance choices rather than being inferred from the incident pager.
 
-## Q7. Managed hosting boundary
+## Approved managed hosting boundary
 
-Recommendation: begin with one primary U.S. region and an isolated backup/disaster-recovery region in the United States. Disclose both concrete locations and operators before managed enrollment. This is a proposed initial market and operating boundary, not a jurisdictional or compliance conclusion.
+Begin with one primary U.S. region and an isolated backup/disaster-recovery region in the United States. Disclose both concrete locations and operators before managed enrollment. This is the selected initial market and operating boundary, not a jurisdictional or compliance conclusion.
 
 Keep managed Case primary storage, backups, project-operated processing, and sensitive operational data inside the declared boundary. Never silently fail over to another country or move a Case to make capacity available. A new boundary or dedicated Enterprise environment needs qualified operations, explicit terms, and an authorized migration.
 
@@ -148,7 +148,7 @@ Source and AI providers may be separate disclosure destinations; the existing pl
 
 Free Local remains device-local and does not acquire a U.S. upload, account, telemetry, or managed subscription requirement. Do not select a cloud vendor, buy capacity, or activate a region merely by accepting this planning policy. Exact providers and regions must pass recovery, privacy, signing/deployment, cost, and access-control gates before receiving customer Cases.
 
-An EU-first launch or separate U.S./EU service boundaries are alternatives. Two launch boundaries increase the number of recovery, key, deletion, incident, and financial readiness paths to prove. Geography can be changed now through this decision rather than inferred from the user's location.
+An EU-first launch or separate U.S./EU service boundaries were considered. Two launch boundaries increase the number of recovery, key, deletion, incident, and financial readiness paths to prove. Any later change to the approved boundary requires explicit review and authorized migration rather than an inferred user location.
 
 ## Proof required before release
 
@@ -158,6 +158,6 @@ Keep a readiness ledger with an owner, evidence path, tested digest/platform, ti
 
 The declaration checker is `node docs/planning/check-release-readiness.mjs`. It checks target consistency and rejects several invalid declarations. It does not replace any of the release evidence above or establish that current infrastructure meets these targets.
 
-## Pending decisions
+## Decision boundary
 
-The seven choices are platform coverage, release/update/migration controls, performance budgets, managed recovery/availability, observability defaults, incident readiness, and initial hosting geography. None is approved yet. Selecting the recommended set resolves this ticket once recorded. Release stages, licensing, and broader governance remain with [Define licensing, governance, and release stages](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/29); template-specific acceptance remains with its existing ticket.
+All seven choices are approved. Operational-readiness decision questions remaining: 0. This resolves the planning ticket. Implementation evidence, staffed coverage, actual providers/regions, cost validation, and contractual commitments remain future release gates. Release stages, licensing, and broader governance remain with [Define licensing, governance, and release stages](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/29); template-specific acceptance remains with its existing ticket.

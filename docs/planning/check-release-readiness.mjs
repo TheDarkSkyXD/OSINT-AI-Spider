@@ -58,5 +58,5 @@ for (const [name, mutate] of mutations) {
 const permittedFailures = 100 - targets.reliability.monthlyCoreAvailabilityPercent;
 const windowMinutes = targets.reliability.measurementWindowDays * 24 * 60;
 console.log(`Readiness model: ${targets.decisions.length} decision groups, ${targets.performance.length} latency targets, ${mutations.length} invalid examples rejected.`);
-console.log(`A ${targets.reliability.measurementWindowDays}-day time-based ${targets.reliability.monthlyCoreAvailabilityPercent}% target would permit ${(windowMinutes * permittedFailures / 100).toFixed(1)} unavailable minutes. The proposed core SLI is request-based, with synthetic probes for low traffic.`);
+console.log(`A ${targets.reliability.measurementWindowDays}-day time-based ${targets.reliability.monthlyCoreAvailabilityPercent}% target would permit ${(windowMinutes * permittedFailures / 100).toFixed(1)} unavailable minutes. The defined core SLI is request-based, with synthetic probes for low traffic.`);
 console.log('This validates planning consistency only. It does not run a benchmark, verify release signatures, enforce a deployment hold, or prove backup recovery.');
