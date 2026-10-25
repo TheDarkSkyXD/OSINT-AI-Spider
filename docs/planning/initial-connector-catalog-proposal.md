@@ -1,6 +1,6 @@
 # Initial connector catalog
 
-Status: draft for user review. Catalog boundaries, the target adapter set, the search-provider path, and the initial bug-bounty scope are approved. Interoperability, admission behavior, and coverage presentation remain open.
+Status: approved planning decision. The user approved the final interoperability, admission, health, coverage, and fallback choices on October 25, 2026. Candidate adapters still require implementation and qualification before availability.
 
 Decision: [Choose the initial bundled and verified connector catalog](https://github.com/TheDarkSkyXD/OSINT-AI-Spider/issues/22).
 
@@ -99,10 +99,30 @@ OpenCorporates, OpenSanctions, bulk personal-data services, commercial data feed
 
 The [Etherscan API](https://docs.etherscan.io/introduction) documents keyed chain lookups. Its planned adapter still needs an account contract covering retention, display, and export. The [Esplora API specification](https://github.com/Blockstream/esplora/blob/master/API.md) documents both read endpoints and transaction broadcast; only the read subset belongs in this proposal. The [PDF.js license](https://github.com/mozilla/pdf.js/blob/master/LICENSE) is Apache-2.0; the actual pinned build and dependencies still require packaging review.
 
-## Interoperability and coverage
+## Approved interoperability
 
-CSV and JSON exports expose version references and provenance. GraphML and GEXF projections are graph exchange views with an accompanying manifest, not complete portable Case archives. STIX interchange applies to supported cyber types, with unsupported values reported rather than discarded silently.
+The initial scope includes Portable Case archives, CSV and JSON import and export, XLSX import, GraphML and GEXF projections with manifests, supported STIX 2.1 interchange, and SpiderFoot structured-result imports.
 
-The proposed list contains 30 research or import candidates and three separate active-cyber candidates. The interface must report actual admitted versions, runtime availability, source access, and current health. These candidate counts are not a claim of implemented or healthy integrations.
+CSV and JSON exports expose version references and provenance. GraphML and GEXF projections are graph exchange views with accompanying manifests. Portable Case archives preserve the permitted Case snapshot. STIX 2.1 interchange applies to supported cyber types, with unsupported values reported rather than discarded silently. SpiderFoot imports preserve tool and module origin and discovery lineage.
 
-The final catalog review must settle interoperability scope, adapter admission and health behavior, and truthful coverage and fallback presentation.
+## Approved admission and health behavior
+
+Admit each exact Connector version individually after its access, packaging, security, provenance, platform, fixture, and live-health checks pass. Healthy Connectors may ship while other candidates await qualification. Suspend only the affected Connector when it becomes unhealthy. Preserve its historical outputs and exact-version provenance under the existing Connector lifecycle rules.
+
+## Approved coverage and fallback presentation
+
+The interface uses these plain-language statuses with the relevant reason and next step:
+
+- Available
+- Setup required
+- Runtime missing
+- Access restricted
+- Degraded
+- Unavailable
+- No results
+
+No results describes a completed search without returned matches. It must remain distinct from a Source that could not be searched. These labels describe usability and run outcomes alongside the existing Connector lifecycle states.
+
+Coverage counts include only admitted Connectors and distinguish installed Connectors from those currently usable. The target matrix contains 30 research or import candidates and three separate active-cyber candidates. Candidate totals do not count as available integrations.
+
+Offer manual import or another admitted provider when collection cannot proceed. Explain what was searched, what was not searched, and the reason. A fallback that changes the approved Research plan requires review under the existing plan controls. Never silently substitute a Source.
